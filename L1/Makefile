@@ -8,7 +8,7 @@ OBJECTS=$(notdir $(SOURCES:.c=.o))
 
 all: $(SOURCES) $(EXECUTABLE)
 
-%.o: $(SOURCES)
+%.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(EXECUTABLE): $(OBJECTS)
@@ -16,8 +16,5 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -rf $(OBJECTS) $(EXECUTABLE)
-
-run: $(EXECUTABLE)
-	./$(EXECUTABLE)
 
 .PHONY: all clean 
