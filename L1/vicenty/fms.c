@@ -64,7 +64,7 @@ double route_distance(char* file){
 		alpha =
 		  atan(
 				sqrt( 
-				   pow( cos(points[i].latitude)*
+				   pow( cos(points[i+1].latitude)*
 				   sin(points[i+1].longitude-points[i].longitude), 2 ) +
 				   pow(cos(points[i].latitude)*sin(points[i+1].latitude)
 				   - sin(points[i].latitude)*cos(points[i+1].latitude) *

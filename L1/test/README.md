@@ -18,5 +18,6 @@ Para especificar a tolerância desejada, editar em `tests-main.cpp` a variável 
 
 Como foram definidas várias implementações da mesma fórmula, podem ser testadas ambas apenas alterando a biblioteca que é importada. Para isso, basta editar no `Makefile` o macro `LPATH` para um de:
 + `$(shell pwd)/../acos`
-+ `$(shell pwd)(../vicenty`
++ `$(shell pwd)/../vicenty`
+
 e recompilar tudo. 

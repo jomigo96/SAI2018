@@ -12,7 +12,7 @@ tests-main.cpp:22
 tests-main.cpp:26: FAILED:
   CHECK( abs(route_distance(file)-result)/result < error_tolerance )
 with expansion:
-  0.0056079332 < 0.0
+  0.001400051 < 0.0
 
 -------------------------------------------------------------------------------
 Route distance tests
@@ -24,7 +24,7 @@ tests-main.cpp:29
 tests-main.cpp:33: FAILED:
   CHECK( abs(route_distance(file)-result)/result < error_tolerance )
 with expansion:
-  0.0034898424 < 0.0
+  0.0013775823 < 0.0
 
 -------------------------------------------------------------------------------
 Route distance tests
@@ -36,7 +36,7 @@ tests-main.cpp:36
 tests-main.cpp:40: FAILED:
   CHECK( abs(route_distance(file)-result)/result < error_tolerance )
 with expansion:
-  0.0060605961 < 0.0
+  0.0013233968 < 0.0
 
 -------------------------------------------------------------------------------
 Route distance tests
@@ -48,7 +48,7 @@ tests-main.cpp:43
 tests-main.cpp:47: FAILED:
   CHECK( abs(route_distance(file)-result)/result < error_tolerance )
 with expansion:
-  0.0068499711 < 0.0
+  0.0002675705 < 0.0
 
 ===============================================================================
 test cases: 1 | 1 failed

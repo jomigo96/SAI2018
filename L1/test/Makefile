@@ -5,7 +5,7 @@ EXECUTABLE=test
 SOURCES=$(wildcard *.cpp)
 OBJECTS=$(notdir $(SOURCES:.cpp=.o))
 OBJ=*.o
-LPATH=$(shell pwd)/../acos
+LPATH=$(shell pwd)/../vicenty
 
 $(EXECUTABLE): $(OBJECTS)
 	$(MAKE) -C ../vicenty
