@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include "fms.h"
 
 #define BUF_SIZE 100
 #define DATA_SIZE 100
@@ -14,8 +15,8 @@ struct waypoints{
 
 };
 
-int main(int argc, char** argv){
-
+double route_distance(char* file){
+		
 	const int R = 3440; 					//Earth radius in nm
 	char buffer[BUF_SIZE];					//Buffer to read data
 	unsigned size;							//Number of read points
@@ -28,18 +29,12 @@ int main(int argc, char** argv){
 	double distance=0;						//Distance in nm
 	double alpha;							//Earth center angle in rad
 	const double torad = M_PI/180;			//Conversion factor deg->rad
-	
-	
-	// Read path to input file from command line
-	if(argc < 2){
-		printf("No input file provided, exiting.\n");
-		return -1;
-	}
-	
-	fp = fopen(argv[1], "r");
+		
+		
+	fp = fopen(file, "r");
 	
 	if(fp == NULL){
-		printf("Error opening file \"%s\", exiting.\n", argv[1]);
+		printf("Error opening file \"%s\", exiting.\n", file);
 		return -1;
 	}
 
@@ -48,7 +43,8 @@ int main(int argc, char** argv){
 
 		for(j=0; buffer[j]!=';' ;j++) //Ignore waypoint name
 			;
-		er = sscanf(buffer+j+1, "%lf%*c%lf%*c%lf", &points[i].latitude, &points[i].longitude, &points[i].height);
+		er = sscanf(buffer+j+1, "%lf%*c%lf%*c%lf", &points[i].latitude, 
+							   &points[i].longitude, &points[i].height);
 		if(er != 3){
 			printf("Error reading file, exiting\n");
 			return -1;
@@ -64,19 +60,16 @@ int main(int argc, char** argv){
 	
 	//Calculate distance
 	for(i=0; i<(size-1); i++){
-		//printf("%.1lf / %lf / %lf\n", points[i].height, points[i].latitude, points[i].longitude);
-	
+
 		alpha = acos(
 					sin(points[i].latitude)*sin(points[i+1].latitude) +
 					cos(points[i].latitude)*cos(points[i+1].latitude) * 
 					cos(points[i+1].longitude - points[i].longitude)
-				    );
+					);
+			
 		distance += alpha * (R + points[i].height);
 	}
 	
-	//Print result
-	printf("------------------------------\n\n");
-	printf("Total route distance: %lf nautical miles\n", distance);
-
-	return 0;
+	//return result
+	return distance;
 }
