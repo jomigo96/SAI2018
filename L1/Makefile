@@ -1,8 +1,9 @@
 CC=gcc
 CFLAGS= -Wall -pedantic 
 LDFLAGS= -lm
-EXECUTABLE=prog1
+EXECUTABLE=prog
 SOURCES=prog1.c
+INPUT=routes/vhhh-klax.txt
 
 OBJECTS=$(notdir $(SOURCES:.c=.o))
 
@@ -17,4 +18,10 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	rm -rf $(OBJECTS) $(EXECUTABLE)
 
-.PHONY: all clean 
+memcheck: $(EXECUTABLE)
+	valgrind --leak-check=full --show-leak-kinds=all ./$< $(INPUT)
+
+run: $(EXECUTABLE)
+	./$< $(INPUT)
+
+.PHONY: all clean run

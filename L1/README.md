@@ -11,7 +11,7 @@ make
 
 executar com
 ```
-./prog1 <path to input file>
+./prog <path to input file>
 ```
 
 O ficheiro de input deve ter o formato:
