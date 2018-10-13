@@ -10,7 +10,7 @@ TEST_CASE("Route distance tests"){
 	char file[40];
 	double result;
 	//Maximum error percentage
-	const double error_tolerance = 0;
+	const double error_tolerance = 0.005;
 
 	SECTION("Unexisting file"){
 		strcpy(file, "nofile.txt");
