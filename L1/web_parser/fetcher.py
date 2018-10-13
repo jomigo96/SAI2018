@@ -88,7 +88,7 @@ if __name__ == "__main__":
 			lon_min = math.floor((lon-lon_deg)*60)
 			lat_sec = (lat - lat_deg - lat_min/60) *3600
 			lon_sec= (lon - lon_deg - lon_min/60) *3600
-			fp.write('{0};{1:.0f}° {2:.0f}\' {3:.6f}\" {4} {5:.0f}° {6:.0f}\' {7:.6f}\" {8} {9}ft\n'.format(
-				idd[i], lat, lat_min, lat_sec, char_lat, 
-				lon, lon_min, lon_sec, char_lon, h[i]))
+			fp.write('{0};{1:.0f}°{2:02.0f}\'{3:.6f}\"{4} {5:.0f}°{6:02.0f}\'{7:.6f}\"{8} {9}ft;\n'.format(
+				idd[i], math.floor(lat), lat_min, lat_sec, char_lat, 
+				math.floor(lon), lon_min, lon_sec, char_lon, h[i]))
 	print("Finished")

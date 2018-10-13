@@ -5,10 +5,10 @@ EXECUTABLE=test
 SOURCES=$(wildcard *.cpp)
 OBJECTS=$(notdir $(SOURCES:.cpp=.o))
 OBJ=*.o
-LPATH=$(shell pwd)/../vicenty
+LPATH=$(shell pwd)/../fms
 
 $(EXECUTABLE): $(OBJECTS)
-	$(MAKE) -C ../vicenty
+	$(MAKE) -C ../fms
 	$(CC) -o $@ $< -L$(LPATH) -lfms -Wl,-rpath=$(LPATH) $(LDFLAGS) 
 
 clean:
