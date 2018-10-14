@@ -10,6 +10,7 @@ double route_distance_v0(struct waypoints *points, int count){
 		
 	int i;
 	const int R = 3440; 
+	const double ft2nm = 0.000164578834;
 	double distance = 0;
 	double alpha;	
 		
@@ -21,7 +22,7 @@ double route_distance_v0(struct waypoints *points, int count){
 					cos(points[i+1].longitude - points[i].longitude)
 					);
 			
-		distance += alpha * (R + points[i].height);
+		distance += alpha * (R + points[i].height*ft2nm);
 	}
 
 	return distance;
@@ -32,6 +33,7 @@ double route_distance(struct waypoints *points, int count){
 		
 	int i;
 	const int R = 3440; 
+	const double ft2nm = 0.000164578834;
 	double distance = 0;
 	double alpha;	
 		
@@ -52,7 +54,7 @@ double route_distance(struct waypoints *points, int count){
 				 )
 			   );
 			
-		distance += alpha * (R + points[i].height);
+		distance += alpha * (R + points[i].height*ft2nm);
 	}
 
 	return distance;
@@ -89,7 +91,6 @@ int import(char* file, struct waypoints *points, size_t max_size){
 
 		points[i].latitude = (lat_char=='N'?1:-1) * torad * (lat_deg+lat_min/60.0+lat_sec/3600.0);       
 		points[i].longitude = (lon_char=='E'?1:-1) * torad * (lon_deg+lon_min/60.0+lon_sec/3600.0);
-		points[i].height *= 0.000164578834; //Convert to nm
 		i++;
 
 	}
@@ -97,3 +98,59 @@ int import(char* file, struct waypoints *points, size_t max_size){
 	
 	return i;
 }
+
+
+
+double delta_t(double velocity){
+
+	// assumes km/h? - then this is the delta t which makes the aircraft move 10km
+	return 10.0/velocity*3600;
+}
+
+
+
+struct waypoints next_position(struct waypoints previous, double tas, double phi_ref, double theta_ref, double delta_t){
+
+	const int R = 6371; //km
+	const double ft2km = 0.0003048;
+
+	struct waypoints n_pos;
+	double v_north;
+	double v_east;
+	double v_up;
+	double distance;
+	double delta;
+
+	
+	v_north = tas * cos(theta_ref) * cos(phi_ref);
+	v_east  = tas * cos(theta_ref) * sin(phi_ref);		
+	v_up = tas * sin(theta_ref);
+
+	distance = delta_t/3600.0 * sqrt( pow(v_north, 2) + pow(v_east, 2) );
+	delta = distance/(previous.height*ft2km + R);
+
+	n_pos.latitude = asin(sin(previous.latitude)*cos(delta) + cos(previous.latitude)*sin(delta)*cos(phi_ref));
+	n_pos.longitude = n_pos.longitude + atan2(sin(phi_ref)*sin(delta)*cos(previous.latitude), cos(delta)-sin(previous.latitude)*sin(n_pos.latitude));
+	wrap_pi(&n_pos.longitude);
+
+	n_pos.height = (previous.height + v_up/ft2km * delta_t/3600.0);
+	
+	return n_pos;
+
+}
+
+
+void wrap_pi(double * angle){
+
+	if(*angle <= -M_PI)
+		while((*angle += 2*M_PI) <= -M_PI)
+			;
+	if(*angle > M_PI)
+		while((*angle -= 2*M_PI) > M_PI)
+			;
+
+}
+
+
+
+

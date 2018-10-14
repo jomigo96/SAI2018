@@ -5,7 +5,7 @@
 #include <math.h>
 
 //Maximum error percentage
-const double error_tolerance = 0;
+const double error_tolerance = 0.01;
 
 TEST_CASE("Route distance tests, vicenty's formula"){
 	
@@ -95,4 +95,49 @@ TEST_CASE("Route distance tests, regular formula"){
 		c=import(file, points, 150);
 		CHECK(abs(route_distance_v0(points, c)-result)/result < error_tolerance);
 	}
+}
+
+
+TEST_CASE("Wrapping angles"){
+
+	double angle;
+
+	angle = 1.2;
+	wrap_pi(&angle);
+	CHECK(abs(angle-1.2) < 0.001);
+
+	angle = -1.2;
+	wrap_pi(&angle);
+	CHECK(abs(angle - -1.2) < 0.001);
+
+	angle = -3*M_PI;
+	wrap_pi(&angle);
+	CHECK(abs(angle-M_PI) < 0.001);
+
+	angle = 6.5*M_PI;
+	wrap_pi(&angle);
+	CHECK(abs(angle-M_PI/2) < 0.001);
+}
+
+TEST_CASE("Position integration"){
+
+	struct waypoints prev, next;
+	double v, phi, theta, t;
+	const double torad = M_PI/180;
+	const double er_tol = 0.00174; //0.1deg
+
+	prev.latitude = 53.32056 * torad;
+	prev.longitude = -1.729722 * torad;
+	prev.height = 30000; //ft
+	v=700;//kmh
+	theta=0;
+	t=51.42;
+	phi=90 * torad;
+
+	next = next_position(prev, v, phi, theta, t);
+
+	CHECK(abs(next.latitude - 53.32056*torad) < er_tol);
+	CHECK(abs(next.longitude - -1.579167*torad) < er_tol);
+	CHECK(abs(next.height - prev.height) < 50);
+	std::cout << next.latitude/torad << " -- " << next.longitude/torad << " -- " << next.height << std::endl;
 }
