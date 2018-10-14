@@ -155,5 +155,19 @@ void wrap_pi(double * angle){
 }
 
 
+double heading(struct waypoints pos1, struct waypoints pos2){
+
+	const double d_long = pos2.longitude-pos1.longitude;
+	double psi = atan2(sin(d_long)*cos(pos2.latitude), cos(pos1.latitude)*sin(pos2.latitude)-sin(pos1.latitude)*cos(pos2.latitude)*cos(d_long) );
+	wrap_pi(&psi);
+	return psi;
+}
 
 
+double climb_angle(double h1, double h_ref, double tas){
+
+	const double ft2km = 0.0003048; 
+
+	return asin(ALPHA*(h_ref-h1)*ft2km/tas);
+
+}

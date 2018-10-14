@@ -158,3 +158,29 @@ TEST_CASE("Position integration"){
 
 
 }
+
+TEST_CASE("Headings"){
+
+	struct waypoints pos1, pos2;
+	double result;
+	const double torad = M_PI/180.0;
+	const double er_tol = 0.001*torad;
+
+	pos1.latitude = 50*torad;
+	pos1.longitude = 5*torad;
+	pos1.height = 30000;
+	pos2.latitude = 58*torad;
+	pos2.longitude = 171*torad;
+	pos2.height = 30000;
+	result = 7.774444*torad;
+
+	CHECK(abs(heading(pos1,pos2)-result) < er_tol);
+
+	pos1.latitude = -50*torad;
+	pos1.longitude = 5*torad;
+	pos2.latitude = 45*torad;
+	pos2.longitude = -65*torad;
+	result = -46.0842*torad;
+	CHECK(abs(heading(pos1,pos2)-result) < er_tol);
+}
+
