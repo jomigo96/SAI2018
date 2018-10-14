@@ -109,7 +109,7 @@ double delta_t(double velocity){
 
 
 
-struct waypoints next_position(struct waypoints previous, double tas, double phi_ref, double theta_ref, double delta_t){
+struct waypoints next_position(struct waypoints previous, double tas, double psi_ref, double theta_ref, double delta_t){
 
 	const int R = 6371; //km
 	const double ft2km = 0.0003048;
@@ -120,17 +120,20 @@ struct waypoints next_position(struct waypoints previous, double tas, double phi
 	double v_up;
 	double distance;
 	double delta;
-
+	double q;
+	double d_psi;
 	
-	v_north = tas * cos(theta_ref) * cos(phi_ref);
-	v_east  = tas * cos(theta_ref) * sin(phi_ref);		
+	v_north = tas * cos(theta_ref) * cos(psi_ref);
+	v_east  = tas * cos(theta_ref) * sin(psi_ref);		
 	v_up = tas * sin(theta_ref);
 
 	distance = delta_t/3600.0 * sqrt( pow(v_north, 2) + pow(v_east, 2) );
 	delta = distance/(previous.height*ft2km + R);
 
-	n_pos.latitude = asin(sin(previous.latitude)*cos(delta) + cos(previous.latitude)*sin(delta)*cos(phi_ref));
-	n_pos.longitude = n_pos.longitude + atan2(sin(phi_ref)*sin(delta)*cos(previous.latitude), cos(delta)-sin(previous.latitude)*sin(n_pos.latitude));
+	n_pos.latitude = previous.latitude + delta*cos(psi_ref);
+	d_psi = log(tan(M_PI/4-previous.latitude/2)/tan(M_PI/4-n_pos.latitude/2));
+	q = (abs(d_psi) > 10e-12) ? delta*cos(psi_ref) : cos(previous.latitude);
+	n_pos.longitude = previous.longitude + delta*sin(psi_ref)/q;
 	wrap_pi(&n_pos.longitude);
 
 	n_pos.height = (previous.height + v_up/ft2km * delta_t/3600.0);

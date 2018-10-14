@@ -124,10 +124,25 @@ TEST_CASE("Position integration"){
 	struct waypoints prev, next;
 	double v, phi, theta, t;
 	const double torad = M_PI/180;
-	const double er_tol = 0.00174; //0.1deg
+	const double er_tol = 0.001*torad; //0.1deg
 
-	prev.latitude = 53.32056 * torad;
-	prev.longitude = -1.729722 * torad;
+	prev.latitude = 50 * torad;
+	prev.longitude = 5 * torad;
+	prev.height = 30000; //ft
+	v=700;//kmh
+	theta=0;
+	t=51.42;
+	phi=45 * torad;
+
+	next = next_position(prev, v, phi, theta, t);
+
+	CHECK(abs(next.latitude - 50.06359164*torad) < er_tol);
+	CHECK(abs(next.longitude - 5.09899654*torad) < er_tol);
+	CHECK(abs(next.height - prev.height) < 50);
+	//std::cout << next.latitude/torad << " -- " << next.longitude/torad << " -- " << next.height << std::endl;
+
+	prev.latitude = -50 * torad;
+	prev.longitude = -15 * torad;
 	prev.height = 30000; //ft
 	v=700;//kmh
 	theta=0;
@@ -136,8 +151,10 @@ TEST_CASE("Position integration"){
 
 	next = next_position(prev, v, phi, theta, t);
 
-	CHECK(abs(next.latitude - 53.32056*torad) < er_tol);
-	CHECK(abs(next.longitude - -1.579167*torad) < er_tol);
+	CHECK(abs(next.latitude - -50*torad) < er_tol);
+	CHECK(abs(next.longitude - -14.86009039*torad) < er_tol);
 	CHECK(abs(next.height - prev.height) < 50);
-	std::cout << next.latitude/torad << " -- " << next.longitude/torad << " -- " << next.height << std::endl;
+	//std::cout << next.latitude/torad << " -- " << next.longitude/torad << " -- " << next.height << std::endl;
+
+
 }
