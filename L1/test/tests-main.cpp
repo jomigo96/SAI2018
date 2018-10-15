@@ -25,7 +25,7 @@ TEST_CASE("Route distance tests, vicenty's formula"){
 		strcpy(file, "../routes/kmsy-lfpg.txt");
 		result=4227.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance(points, c)-result)/result < error_tolerance);
 	}
 	
 
@@ -33,14 +33,14 @@ TEST_CASE("Route distance tests, vicenty's formula"){
 		strcpy(file, "../routes/kord-lppt.txt");
 		result=3748.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance(points, c)-result)/result < error_tolerance);
 	}
 
 	SECTION("Auckland-Doha"){
 		strcpy(file, "../routes/nzaa-otbd.txt");
 		result=7871.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance(points, c)-result)/result < error_tolerance);
 	}
 
 
@@ -48,7 +48,7 @@ TEST_CASE("Route distance tests, vicenty's formula"){
 		strcpy(file, "../routes/zspd-klax.txt");
 		result=5778.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance(points, c)-result)/result < error_tolerance);
 	}
 }
 
@@ -70,7 +70,7 @@ TEST_CASE("Route distance tests, regular formula"){
 		strcpy(file, "../routes/kmsy-lfpg.txt");
 		result=4227.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance_v0(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance_v0(points, c)-result)/result < error_tolerance);
 	}
 	
 
@@ -78,14 +78,14 @@ TEST_CASE("Route distance tests, regular formula"){
 		strcpy(file, "../routes/kord-lppt.txt");
 		result=3748.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance_v0(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance_v0(points, c)-result)/result < error_tolerance);
 	}
 
 	SECTION("Auckland-Doha"){
 		strcpy(file, "../routes/nzaa-otbd.txt");
 		result=7871.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance_v0(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance_v0(points, c)-result)/result < error_tolerance);
 	}
 
 
@@ -93,7 +93,7 @@ TEST_CASE("Route distance tests, regular formula"){
 		strcpy(file, "../routes/zspd-klax.txt");
 		result=5778.0;
 		c=import(file, points, 150);
-		CHECK(abs(route_distance_v0(points, c)-result)/result < error_tolerance);
+		CHECK(fabs(route_distance_v0(points, c)-result)/result < error_tolerance);
 	}
 }
 
@@ -104,19 +104,19 @@ TEST_CASE("Wrapping angles"){
 
 	angle = 1.2;
 	wrap_pi(&angle);
-	CHECK(abs(angle-1.2) < 0.001);
+	CHECK(fabs(angle-1.2) < 0.001);
 
 	angle = -1.2;
 	wrap_pi(&angle);
-	CHECK(abs(angle - -1.2) < 0.001);
+	CHECK(fabs(angle - -1.2) < 0.001);
 
 	angle = -3*M_PI;
 	wrap_pi(&angle);
-	CHECK(abs(angle-M_PI) < 0.001);
+	CHECK(fabs(angle-M_PI) < 0.001);
 
 	angle = 6.5*M_PI;
 	wrap_pi(&angle);
-	CHECK(abs(angle-M_PI/2) < 0.001);
+	CHECK(fabs(angle-M_PI/2) < 0.001);
 }
 
 TEST_CASE("Position integration"){
@@ -136,11 +136,12 @@ TEST_CASE("Position integration"){
 
 	next = next_position(prev, v, phi, theta, t);
 
-	CHECK(abs(next.latitude - 50.06359164*torad) < er_tol);
-	CHECK(abs(next.longitude - 5.09899654*torad) < er_tol);
-	CHECK(abs(next.height - prev.height) < 50);
+	CHECK(fabs(next.latitude - 50.06359164*torad) < er_tol);
+	CHECK(fabs(next.longitude - 5.09899654*torad) < er_tol);
+	CHECK(fabs(next.height - prev.height) < 50);
 	//std::cout << next.latitude/torad << " -- " << next.longitude/torad << " -- " << next.height << std::endl;
 
+	
 	prev.latitude = -50 * torad;
 	prev.longitude = -15 * torad;
 	prev.height = 30000; //ft
@@ -151,12 +152,12 @@ TEST_CASE("Position integration"){
 
 	next = next_position(prev, v, phi, theta, t);
 
-	CHECK(abs(next.latitude - -50*torad) < er_tol);
-	CHECK(abs(next.longitude - -14.86009039*torad) < er_tol);
-	CHECK(abs(next.height - prev.height) < 50);
+	CHECK(fabs(next.latitude - -50*torad) < er_tol);
+	CHECK(fabs(next.longitude - -14.86009039*torad) < er_tol);
+	CHECK(fabs(next.height - prev.height) < 50);
 	//std::cout << next.latitude/torad << " -- " << next.longitude/torad << " -- " << next.height << std::endl;
 
-
+	
 }
 
 TEST_CASE("Headings"){
@@ -174,13 +175,13 @@ TEST_CASE("Headings"){
 	pos2.height = 30000;
 	result = 7.774444*torad;
 
-	CHECK(abs(heading(pos1,pos2)-result) < er_tol);
+	CHECK(fabs(heading_angle(pos1,pos2)-result) < er_tol);
 
 	pos1.latitude = -50*torad;
 	pos1.longitude = 5*torad;
 	pos2.latitude = 45*torad;
 	pos2.longitude = -65*torad;
 	result = -46.0842*torad;
-	CHECK(abs(heading(pos1,pos2)-result) < er_tol);
+	CHECK(fabs(heading_angle(pos1,pos2)-result) < er_tol);
 }
 

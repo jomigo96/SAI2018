@@ -5,7 +5,7 @@ EXECUTABLE=main
 SOURCES=fms.c
 HEADERS=fms.h
 LPATH=$(shell pwd)
-INPUT=../routes/vhhh-klax.txt
+INPUT=../routes/kord-lppt.txt
 
 OBJECTS=$(notdir $(SOURCES:.c=.o))
 
@@ -16,7 +16,7 @@ all: $(SOURCES) $(HEADERS) $(EXECUTABLE)
 	$(CC) -shared -Wl,-soname,libfms.so -o libfms.so $(OBJECTS)
 	rm -rf $(OBJECTS)
 
-$(EXECUTABLE): libfms.so
+$(EXECUTABLE): libfms.so main.c
 	$(CC) $(CFLAGS) -c -o main.o main.c
 	$(CC) -o $@ main.o -L$(LPATH) -lfms -Wl,-rpath=$(LPATH) $(LDFLAGS)
 
