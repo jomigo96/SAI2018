@@ -235,7 +235,12 @@ void log_data(FILE* os, struct waypoints pos, double t, double heading, double c
 	lon_sec = (pos.longitude - lon_deg - lon_min/60.0)*3600.0;
 	
 
-	fprintf(os, "%2fs;%d°%d'%.6lf\"%c %d°%d'%.6lf\"%c %.2lfft;%.1lfkm/h;%.2lf°;%.2lf°;\n", t, lat_deg, lat_min, lat_sec, lat_char, lon_deg, lon_min, lon_sec, lon_char, pos.height, tas, heading/torad, climb/torad);
+	fprintf(os, "%.2lfs;%d°%d'%.6lf\"%c %d°%d'%.6lf\"%c %.2lfft;%.1lfkm/h;%.2lf°;%.2lf°;\n", t, lat_deg, lat_min, lat_sec, lat_char, lon_deg, lon_min, lon_sec, lon_char, pos.height, tas, heading/torad, climb/torad);
 
 }
 
+void log_errors(FILE* os, double error, double t){
+
+	fprintf(os, "%.2lfs;%.4lfnm;\n", t, error);
+
+}

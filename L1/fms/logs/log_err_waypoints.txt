@@ -1,0 +1,55 @@
+Errors at waypoint 2:
+Noisy and no auto-pilot              : 0.023241nm
+Noisy and auto-pilot                 : 0.204572nm
+Noisy and auto-pilot with correction : 0.204572nm
+
+Errors at waypoint 3:
+Noisy and no auto-pilot              : 0.000417nm
+Noisy and auto-pilot                 : 0.012890nm
+Noisy and auto-pilot with correction : 0.184562nm
+
+Errors at waypoint 4:
+Noisy and no auto-pilot              : 0.007309nm
+Noisy and auto-pilot                 : 0.031565nm
+Noisy and auto-pilot with correction : 0.020365nm
+
+Errors at waypoint 5:
+Noisy and no auto-pilot              : 0.018435nm
+Noisy and auto-pilot                 : 0.377341nm
+Noisy and auto-pilot with correction : 0.372828nm
+
+Errors at waypoint 6:
+Noisy and no auto-pilot              : 0.016281nm
+Noisy and auto-pilot                 : 0.006547nm
+Noisy and auto-pilot with correction : 0.014614nm
+
+Errors at waypoint 7:
+Noisy and no auto-pilot              : 0.010249nm
+Noisy and auto-pilot                 : 0.124090nm
+Noisy and auto-pilot with correction : 0.130251nm
+
+Errors at waypoint 8:
+Noisy and no auto-pilot              : 0.000214nm
+Noisy and auto-pilot                 : 0.150143nm
+Noisy and auto-pilot with correction : 0.124795nm
+
+Errors at waypoint 9:
+Noisy and no auto-pilot              : 0.003984nm
+Noisy and auto-pilot                 : 0.160935nm
+Noisy and auto-pilot with correction : 0.014106nm
+
+Errors at waypoint 10:
+Noisy and no auto-pilot              : 0.002610nm
+Noisy and auto-pilot                 : 0.161704nm
+Noisy and auto-pilot with correction : 0.009384nm
+
+Errors at waypoint 11:
+Noisy and no auto-pilot              : 0.005061nm
+Noisy and auto-pilot                 : 0.179957nm
+Noisy and auto-pilot with correction : 0.020583nm
+
+Errors at waypoint 12:
+Noisy and no auto-pilot              : 0.031705nm
+Noisy and auto-pilot                 : 0.185103nm
+Noisy and auto-pilot with correction : 0.223906nm
+

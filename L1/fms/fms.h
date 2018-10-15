@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#define ALPHA 0.0005
+#define ALPHA 5
 // alpha has units /h
 
 struct waypoints{
@@ -26,7 +26,7 @@ void wrap_pi(double * angle);
 double heading_angle(struct waypoints pos1, struct waypoints pos2);
 double climb_angle(double h1, double h_ref, double tas);
 void log_data(FILE* os, struct waypoints pos, double t, double heading, double climb, double tas);
-
+void log_errors(FILE* os, double error, double t);
 
 
 
