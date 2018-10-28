@@ -1,4 +1,4 @@
-# Programa com a fórmula do arcos
+# Biblioteca _Flight Management System_
 
 ## Uso
 
@@ -16,7 +16,11 @@ E para executar com um ficheiro predifinido:
 make run
 ```
 
+## Logs
+Os _logs_ das rotas e erros são escritos em `logs`.
+
 ## Testes
+Ver diretoria ```L1/test```
 
 ### Valgrind
 
@@ -24,7 +28,3 @@ O teste de memória pode ser corrido com
 ```
 make memcheck
 ```
-
-## Unitários
-
-Ver diretoria `test`.
