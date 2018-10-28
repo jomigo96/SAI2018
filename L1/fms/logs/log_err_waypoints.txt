@@ -1,55 +1,55 @@
 Errors at waypoint 2:
-Noisy and no auto-pilot              : 0.023241nm
-Noisy and auto-pilot                 : 0.204572nm
-Noisy and auto-pilot with correction : 0.204572nm
+Noisy sensor readings                       : 0.204572nm
+Noisy sensor readings with feedback control : 0.167770nm
+With position update at the waypoints       : 0.167770nm
 
 Errors at waypoint 3:
-Noisy and no auto-pilot              : 0.000417nm
-Noisy and auto-pilot                 : 0.012890nm
-Noisy and auto-pilot with correction : 0.184562nm
+Noisy sensor readings                       : 0.012890nm
+Noisy sensor readings with feedback control : 0.147317nm
+With position update at the waypoints       : 0.250001nm
 
 Errors at waypoint 4:
-Noisy and no auto-pilot              : 0.007309nm
-Noisy and auto-pilot                 : 0.031565nm
-Noisy and auto-pilot with correction : 0.020365nm
+Noisy sensor readings                       : 0.031565nm
+Noisy sensor readings with feedback control : 0.173390nm
+With position update at the waypoints       : 0.088158nm
 
 Errors at waypoint 5:
-Noisy and no auto-pilot              : 0.018435nm
-Noisy and auto-pilot                 : 0.377341nm
-Noisy and auto-pilot with correction : 0.372828nm
+Noisy sensor readings                       : 0.377341nm
+Noisy sensor readings with feedback control : 0.172894nm
+With position update at the waypoints       : 0.321248nm
 
 Errors at waypoint 6:
-Noisy and no auto-pilot              : 0.016281nm
-Noisy and auto-pilot                 : 0.006547nm
-Noisy and auto-pilot with correction : 0.014614nm
+Noisy sensor readings                       : 0.006547nm
+Noisy sensor readings with feedback control : 0.191176nm
+With position update at the waypoints       : 0.043633nm
 
 Errors at waypoint 7:
-Noisy and no auto-pilot              : 0.010249nm
-Noisy and auto-pilot                 : 0.124090nm
-Noisy and auto-pilot with correction : 0.130251nm
+Noisy sensor readings                       : 0.124090nm
+Noisy sensor readings with feedback control : 0.193857nm
+With position update at the waypoints       : 0.169953nm
 
 Errors at waypoint 8:
-Noisy and no auto-pilot              : 0.000214nm
-Noisy and auto-pilot                 : 0.150143nm
-Noisy and auto-pilot with correction : 0.124795nm
+Noisy sensor readings                       : 0.150143nm
+Noisy sensor readings with feedback control : 0.342286nm
+With position update at the waypoints       : 0.149331nm
 
 Errors at waypoint 9:
-Noisy and no auto-pilot              : 0.003984nm
-Noisy and auto-pilot                 : 0.160935nm
-Noisy and auto-pilot with correction : 0.014106nm
+Noisy sensor readings                       : 0.160935nm
+Noisy sensor readings with feedback control : 0.504105nm
+With position update at the waypoints       : 0.117377nm
 
 Errors at waypoint 10:
-Noisy and no auto-pilot              : 0.002610nm
-Noisy and auto-pilot                 : 0.161704nm
-Noisy and auto-pilot with correction : 0.009384nm
+Noisy sensor readings                       : 0.161704nm
+Noisy sensor readings with feedback control : 0.434114nm
+With position update at the waypoints       : 0.026618nm
 
 Errors at waypoint 11:
-Noisy and no auto-pilot              : 0.005061nm
-Noisy and auto-pilot                 : 0.179957nm
-Noisy and auto-pilot with correction : 0.020583nm
+Noisy sensor readings                       : 0.179957nm
+Noisy sensor readings with feedback control : 0.191025nm
+With position update at the waypoints       : 0.147635nm
 
 Errors at waypoint 12:
-Noisy and no auto-pilot              : 0.031705nm
-Noisy and auto-pilot                 : 0.185103nm
-Noisy and auto-pilot with correction : 0.223906nm
+Noisy sensor readings                       : 0.185103nm
+Noisy sensor readings with feedback control : 0.211652nm
+With position update at the waypoints       : 0.184487nm
 
