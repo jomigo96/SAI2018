@@ -1,6 +1,6 @@
 # fetcher.py
 
-Script to extract route table from [flightplandatabase](flightplandatabase.com) and write a file with the format expected from our program.
+Script to extract route table from [flightplandatabase](https://flightplandatabase.com) and write a file with the format expected from our program.
 
 ## Usage
 

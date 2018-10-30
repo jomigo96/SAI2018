@@ -4,7 +4,7 @@ Aqui encontram-se os testes unitários à função de cálculo de distância.
 
 É usada a framework de testes [catch2](https://github.com/catchorg/Catch2), uma biblioteca só de um header em C++. Para correr, é necessário ter instalado o g++.
 
-O resultado do cálculo da distância é comparado com o presente na página da rota em [flightplandatabase](flightplandatabase.com).
+O resultado do cálculo da distância é comparado com o presente na página da rota em [flightplandatabase](https://flightplandatabase.com).
 
 ## Executar
 
