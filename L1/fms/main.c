@@ -29,8 +29,8 @@ int main(int argc, char** argv){
 	const double nm2km = 1.85200;
 
 	// Logs
-	FILE *out1, *out2, *out3, *out4, *error2, *error3, *error4, 
-		 *error_waypoints;
+	FILE *out1, *out2, *out3, *out4, *error2, *error3_1, *error3_2,
+		 *error4_1, *error4_2, *error_waypoints;
 
 	// Positions
 	struct waypoints
@@ -86,16 +86,20 @@ int main(int argc, char** argv){
 	out3 = fopen("logs/log_feedback.txt", "w");
 	out4 = fopen("logs/log_corrected.txt", "w");
 	error2 = fopen("logs/log_err_noisy.txt", "w");
-	error3 = fopen("logs/log_err_feedback.txt", "w");
-	error4 = fopen("logs/log_err_corrected.txt", "w");
+	error3_1 = fopen("logs/log_err_feedback-self.txt", "w");
+	error3_2 = fopen("logs/log_err_feedback.txt", "w");
+	error4_1 = fopen("logs/log_err_corrected-self.txt", "w");
+	error4_2 = fopen("logs/log_err_corrected.txt", "w");
 	error_waypoints = fopen("logs/log_err_waypoints.txt", "w");
 	fprintf(out1, "time;position;tas;heading_angle;climb_angle;\n");
 	fprintf(out2, "time;position;tas;heading_angle;climb_angle;\n");
 	fprintf(out3, "time;position;tas;heading_angle;climb_angle;\n");
 	fprintf(out4, "time;position;tas;heading_angle;climb_angle;\n");
 	fprintf(error2, "time;position_error\n");
-	fprintf(error3, "time;position_error\n");
-	fprintf(error4, "time;position_error\n");
+	fprintf(error3_1, "time;position_error\n");
+	fprintf(error3_2, "time;position_error\n");
+	fprintf(error4_1, "time;position_error\n");
+	fprintf(error4_2, "time;position_error\n");
 
 	// Initialize variables
 	current_pos = points[0];
@@ -158,11 +162,11 @@ int main(int argc, char** argv){
 						   	vm_feedback, heading, climb, dt);
 			log_data(out3, current_pos_feedback, t, heading, climb,
 						   	vm_feedback);
-
+			//
 			// Exact route considering the aircraft's true velocity
 			current_pos_true_feedback = next_position(
 							current_pos_true_feedback, tas_feedback,
-						   	heading, climb, dt);
+							heading, climb, dt);
 
 			// With position correction at waypoints (Point 4)
 			heading = heading_angle(current_pos_cor, points[j]);
@@ -183,11 +187,19 @@ int main(int argc, char** argv){
 
 			pos_pair[0] = current_pos_true_feedback;
 			pos_pair[1] = current_pos_feedback;
-			log_errors(error3, fabs(route_distance(pos_pair, 2)), t);
+			log_errors(error3_1, fabs(route_distance(pos_pair, 2)), t);
+
+			pos_pair[0] = current_pos;
+			pos_pair[1] = current_pos_feedback;
+			log_errors(error3_2, fabs(route_distance(pos_pair, 2)), t);
 
 			pos_pair[0] = current_pos_true_cor;
 			pos_pair[1] = current_pos_cor;
-			log_errors(error4, fabs(route_distance(pos_pair, 2)), t);
+			log_errors(error4_1, fabs(route_distance(pos_pair, 2)), t);
+
+			pos_pair[0] = current_pos;
+			pos_pair[1] = current_pos_cor;
+			log_errors(error4_2, fabs(route_distance(pos_pair, 2)), t);
 
 			interval--;
 		}		
@@ -201,19 +213,23 @@ int main(int argc, char** argv){
 
 		fprintf(error_waypoints, "Errors at waypoint %d:\n", j+1);
 
-		pos_pair[0]=current_pos;
+		pos_pair[0]=points[j];
+		pos_pair[1]=current_pos;
+		result = fabs(route_distance(pos_pair, 2));
+		fprintf(error_waypoints, "Simple route"
+					"                                : %.6lfnm\n", result);
+
+
 		pos_pair[1]=current_pos_noisy;
 		result = fabs( route_distance(pos_pair, 2) );
 		fprintf(error_waypoints, "Noisy sensor readings"
 						"                       : %.6lfnm\n", result);
 
-		pos_pair[0]=current_pos_true_feedback;
 		pos_pair[1]=current_pos_feedback;
 		result = fabs( route_distance(pos_pair, 2) );
 		fprintf(error_waypoints, "Noisy sensor readings with feedback "
 						"control : %.6lfnm\n", result);
 
-		pos_pair[0]=current_pos_true_cor;
 		pos_pair[1]=current_pos_cor;
 		result = fabs( route_distance(pos_pair, 2) );
 		fprintf(error_waypoints, "With position update at the waypoints"
@@ -230,8 +246,10 @@ int main(int argc, char** argv){
 	fclose(out3);
 	fclose(out4);
 	fclose(error2);
-	fclose(error3);
-	fclose(error4);
+	fclose(error3_1);
+	fclose(error3_2);
+	fclose(error4_1);
+	fclose(error4_2);
 	fclose(error_waypoints);
 
 	printf("Finished\n");

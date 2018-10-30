@@ -1,55 +1,66 @@
 Errors at waypoint 2:
-Noisy sensor readings                       : 0.204572nm
-Noisy sensor readings with feedback control : 0.167770nm
-With position update at the waypoints       : 0.167770nm
+Simple route                                : 0.186744nm
+Noisy sensor readings                       : 0.017840nm
+Noisy sensor readings with feedback control : 0.134134nm
+With position update at the waypoints       : 0.134134nm
 
 Errors at waypoint 3:
-Noisy sensor readings                       : 0.012890nm
-Noisy sensor readings with feedback control : 0.147317nm
-With position update at the waypoints       : 0.250001nm
+Simple route                                : 0.533363nm
+Noisy sensor readings                       : 0.546252nm
+Noisy sensor readings with feedback control : 0.239759nm
+With position update at the waypoints       : 0.345677nm
 
 Errors at waypoint 4:
-Noisy sensor readings                       : 0.031565nm
-Noisy sensor readings with feedback control : 0.173390nm
-With position update at the waypoints       : 0.088158nm
+Simple route                                : 0.874675nm
+Noisy sensor readings                       : 0.906239nm
+Noisy sensor readings with feedback control : 0.432578nm
+With position update at the waypoints       : 0.907529nm
 
 Errors at waypoint 5:
-Noisy sensor readings                       : 0.377341nm
-Noisy sensor readings with feedback control : 0.172894nm
-With position update at the waypoints       : 0.321248nm
+Simple route                                : 0.101984nm
+Noisy sensor readings                       : 0.479325nm
+Noisy sensor readings with feedback control : 0.223479nm
+With position update at the waypoints       : 0.153366nm
 
 Errors at waypoint 6:
-Noisy sensor readings                       : 0.006547nm
-Noisy sensor readings with feedback control : 0.191176nm
-With position update at the waypoints       : 0.043633nm
+Simple route                                : 0.016459nm
+Noisy sensor readings                       : 0.009947nm
+Noisy sensor readings with feedback control : 0.135478nm
+With position update at the waypoints       : 0.044745nm
 
 Errors at waypoint 7:
-Noisy sensor readings                       : 0.124090nm
-Noisy sensor readings with feedback control : 0.193857nm
-With position update at the waypoints       : 0.169953nm
+Simple route                                : 0.030859nm
+Noisy sensor readings                       : 0.154949nm
+Noisy sensor readings with feedback control : 0.406733nm
+With position update at the waypoints       : 0.041004nm
 
 Errors at waypoint 8:
-Noisy sensor readings                       : 0.150143nm
-Noisy sensor readings with feedback control : 0.342286nm
-With position update at the waypoints       : 0.149331nm
+Simple route                                : 0.016268nm
+Noisy sensor readings                       : 0.166409nm
+Noisy sensor readings with feedback control : 0.121051nm
+With position update at the waypoints       : 0.052639nm
 
 Errors at waypoint 9:
-Noisy sensor readings                       : 0.160935nm
-Noisy sensor readings with feedback control : 0.504105nm
-With position update at the waypoints       : 0.117377nm
+Simple route                                : 0.058506nm
+Noisy sensor readings                       : 0.219440nm
+Noisy sensor readings with feedback control : 0.724283nm
+With position update at the waypoints       : 0.020149nm
 
 Errors at waypoint 10:
-Noisy sensor readings                       : 0.161704nm
-Noisy sensor readings with feedback control : 0.434114nm
-With position update at the waypoints       : 0.026618nm
+Simple route                                : 0.045638nm
+Noisy sensor readings                       : 0.207342nm
+Noisy sensor readings with feedback control : 0.571082nm
+With position update at the waypoints       : 0.127589nm
 
 Errors at waypoint 11:
-Noisy sensor readings                       : 0.179957nm
-Noisy sensor readings with feedback control : 0.191025nm
-With position update at the waypoints       : 0.147635nm
+Simple route                                : 0.003527nm
+Noisy sensor readings                       : 0.176431nm
+Noisy sensor readings with feedback control : 0.132426nm
+With position update at the waypoints       : 0.212547nm
 
 Errors at waypoint 12:
-Noisy sensor readings                       : 0.185103nm
-Noisy sensor readings with feedback control : 0.211652nm
-With position update at the waypoints       : 0.184487nm
+Simple route                                : 0.015529nm
+Noisy sensor readings                       : 0.169585nm
+Noisy sensor readings with feedback control : 0.203974nm
+With position update at the waypoints       : 0.100113nm
 
