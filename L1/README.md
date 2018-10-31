@@ -1,5 +1,16 @@
-# Laboratório 1: Route distance
+# Sistemas Aviónicos Integrados - Laboratório 1
 
-A implementação do cálculo da rota é feita com a biblioteca fms na diretoria `fms`. 
+## Autores
 
-A diretoria de testes é `test`. Instruções de uso/compilação estão disponíveis nas mesmas.
++ João Gonçalves 81040
++ Tiago Oliveira 81024
++ Carolina Serra 80768
+
+## Conteúdos
+
++ `/fms` - Diretoria com o código C.
++ `/fms/logs` - Onde se guarda o output do programa.
++ `/test` - Diretoria com os testes unitários.
++ `/routes` - Diretoria onde estão alguns ficheiros com rotas.
++ `/web_parser` - Diretoria com ferramentas auxiliares. 
++ `Relatorio.pdf` - Relatório deste trabalho.
