@@ -32,7 +32,7 @@ y125=(-B125(2)+sqrt(B125(2)^2-4*B125(3)*(B125(1)-v125)))/(2*B125(3));
 figure(1)
 plot(v45n, pressure, 'k^');
 hold on;
-plot(v45n, y45n, 'b-');
+plot(v45n, y45n, 'b-', 'LineWidth', 2);
 title('Pressure at -45deg against voltage');
 xlabel('Voltage [V]');
 ylabel('Pressure [mBar]');
@@ -41,7 +41,7 @@ legend('Experimental', 'Least Squares Fit', 'Location', 'NorthWest');
 figure(2)
 plot(v25, pressure, 'k^');
 hold on;
-plot(v25, y25, 'b-');
+plot(v25, y25, 'b-', 'LineWidth', 2);
 title('Pressure at 25deg against voltage');
 xlabel('Voltage [V]');
 ylabel('Pressure [mBar]');
@@ -50,7 +50,7 @@ legend('Experimental', 'Least Squares Fit', 'Location', 'NorthWest');
 figure(3)
 plot(v125, pressure, 'k^');
 hold on;
-plot(v125, y125, 'b-');
+plot(v125, y125, 'b-', 'LineWidth', 2);
 title('Pressure at 125deg against voltage');
 xlabel('Voltage [V]');
 ylabel('Pressure [mBar]');
@@ -122,4 +122,6 @@ legend('b_0', 'b_1', 'b_2', 'b_0 fit', 'Location', 'NorthWest');
 
 b1 = mean([Bn45(2) B25(2) B125(2)]);
 b2 = mean([Bn45(3) B25(3) B125(3)]);
+
+%function compute_pressure(v, T)
 
