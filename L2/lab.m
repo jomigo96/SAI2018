@@ -5,7 +5,6 @@
 % - Carolina Serra
 
 clear all
-global b1 b2 p1 p2 q1
 
 %% Import Data
 data = csvread("data.csv",1,0);
@@ -19,9 +18,16 @@ clear data
 
 % model: V = b0 + b1*P + b2*P^2
 
-Bn45=lsqminnorm([ones(size(pressure)), pressure, pressure.^2], v45n);
-B25=lsqminnorm([ones(size(pressure)), pressure, pressure.^2], v25);
-B125=lsqminnorm([ones(size(pressure)), pressure, pressure.^2], v125);
+% % for 2017b
+% Bn45=lsqminnorm([ones(size(pressure)), pressure, pressure.^2], v45n);
+% B25=lsqminnorm([ones(size(pressure)), pressure, pressure.^2], v25);
+% B125=lsqminnorm([ones(size(pressure)), pressure, pressure.^2], v125);
+
+% % without 2017b
+A = [ones(size(pressure)), pressure, pressure.^2];
+Bn45 = ((A'*A)^-1 * A')*v45n;
+B25 = ((A'*A)^-1 * A')*v25;
+B125 = ((A'*A)^-1 * A')*v125;
 
 y45n=(-Bn45(2)+sqrt(Bn45(2)^2-4*Bn45(3)*(Bn45(1)-v45n)))/(2*Bn45(3));
 y25=(-B25(2)+sqrt(B25(2)^2-4*B25(3)*(B25(1)-v25)))/(2*B25(3));
@@ -80,16 +86,11 @@ ylabel('Error [mBar]');
 %% Fit with Temperature
 
 T = [-45, 25, 125];
-
-
-
-% Confirmar, 3-data points, o melhor fit será racional: 
 % b0 = (p1*T+p2)/(q1+T)
-% Ou talvez exponencial negativo? Polinomio de 2a ordem não dá bem
 
 b0 = [Bn45(1) B25(1) B125(1)];
 
-% Este código vem da curve fitting toolbox
+% Code from cf toolbox
 [xData, yData] = prepareCurveData( T, b0 );
 ft = fittype( 'rat11' );
 opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
@@ -115,13 +116,40 @@ xlabel('Temperature [deg C]');
 ylabel('Coefficients (Various units)');
 legend('b_0', 'b_1', 'b_2', 'b_0 fit', 'Location', 'NorthWest');
 
-% A figura mostra que o efeito da temperatura afeta principalmente o
-% offset de Voltagem (b0)
+% % For b1 and b2, linear fit is used
+% % -> b1 = C1(1)+C1(2)*T;
+% % -> b2 = C2(1)+C(2)*T
+% C1 = lsqminnorm([1 -45; 1 25; 1 125], [Bn45(2); B25(2); B125(2)]);
+% C2 = lsqminnorm([1 -45; 1 25; 1 125], [Bn45(3); B25(3); B125(3)]);
 
 %% Compute pressure from Voltage + Temperature
 
-b1 = mean([Bn45(2) B25(2) B125(2)]);
-b2 = mean([Bn45(3) B25(3) B125(3)]);
 
 %function compute_pressure(v, T)
+p_c = zeros(3, length(v45n));
+for j=1:length(v45n) 
+    p_c(1,j) = compute_pressure(v45n(j), -45);
+    p_c(2,j) = compute_pressure(v25(j), 25);
+    p_c(3,j) = compute_pressure(v125(j), 125);
+end
+
+error = abs((p_c - [pressure'; pressure'; pressure']));
+
+figure(8)
+scatter3(v45n, -45*ones(size(v45n)), error(1,:), 30, error(1,:), 'filled');
+hold on
+scatter3(v25, 25*ones(size(v25)), error(2,:), 30, error(2,:), 'filled');
+scatter3(v125, 125*ones(size(v125)), error(3,:), 30, error(3,:), 'filled');
+view(2)
+c=colorbar();
+ylabel(c, 'Error [mBar]')
+title('Model error')
+xlabel('Voltage [V]')
+ylabel('Temperature [deg C]')
+
+
+
+
+
+
 
