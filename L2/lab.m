@@ -147,6 +147,22 @@ title('Model error')
 xlabel('Voltage [V]')
 ylabel('Temperature [deg C]')
 
+%% Pressure altitude resolution
+
+q=5.0/2^16;
+v=0.3:q:5;
+p=compute_pressure(v,25);
+h=145366.45*(1-(p./1013.25).^0.190284);
+r=zeros(length(h)-1,1);
+for i=1:(length(h)-1)
+   r(i) = h(i)-h(i+1); 
+end
+
+figure(9)
+plot(h(1:end-1)./1000, r, 'k', 'LineWidth', 2);
+title('Quantization in altitude');
+xlabel('Altitude [\times 10^3 ft]');
+ylabel('Maximum quantization error [ft]');
 
 
 
