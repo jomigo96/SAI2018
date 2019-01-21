@@ -64,6 +64,11 @@ void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt);
 void draw_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on);
 int quit(void);
 
-void draw_text(SDL_Renderer *renderer, int x, int y, float angle, char* text, TTF_Font *font);
+void draw_text(SDL_Renderer *renderer, int x, int y, float angle, int size, char* text, TTF_Font *font);
 void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course);
+void draw_state(SDL_Renderer *renderer, int bandeira);
+void write_freq(SDL_Renderer *renderer, float frequency);
+void draw_markerlights(SDL_Renderer* renderer);
+
+void botao(void);
 #endif //ILS_H

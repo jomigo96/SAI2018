@@ -1,5 +1,7 @@
-# include "ils.h"
-# include "reception_thread.h"
+#include <stdlib.h>
+#include <signal.h>
+#include "ils.h"
+#include "reception_thread.h"
 
 // Global variables
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -10,7 +12,6 @@ int main(int argc, char** argv){
 
 	int running=1;
 	int new=1;
-	unsigned int starting_tick;
 	SDL_Event event;
 	SDL_Renderer* renderer=NULL;
 	SDL_Window* window;
@@ -46,17 +47,13 @@ int main(int argc, char** argv){
 		exit(1);
 	}
 
-
-
 	import_info_runways(argv[1], rwy, &num_rwys);
 	runway_coordinates_to_ecef(rwy, num_rwys);
 
-
 	while(running){
-//TIAGO ACRESCENTOU
 		bandeira=0; in_loc=0; in_gs=0; om_on=0; mm_on=0; im_on=0;
 		detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
-//----------
+
 		if(sel_rwy!=-1)
 		{
 			//rececao da posição;
@@ -97,20 +94,15 @@ int main(int argc, char** argv){
 			draw_indicator(renderer);
 			draw_CDI(renderer, x_sum_pt, y_sum_pt);
 			//draw_text(renderer, 250, 20, 0, "N", font);
-			draw_compass(renderer, font, p.heading*DEG_to_RAD);
+			draw_compass(renderer, font, rwy[sel_rwy].orientacao);
 			write_freq(renderer, sel_freq);
-			acender_beacons(renderer, im_on, mm_on, om_on, &b_on);
+			draw_beacons(renderer, im_on, mm_on, om_on, &b_on);
 			draw_state(renderer, bandeira);
 			SDL_RenderPresent(renderer);
-			botao();
+			//botao();
 
 		}
 
-		/*
-		starting_tick = SDL_GetTicks();
-		if ((1000/fps)>SDL_GetTicks()-starting_tick)
-			SDL_Delay(1000/fps-(SDL_GetTicks()-starting_tick));
-		*/
 		running = quit();
 	}
 	SDL_DestroyRenderer(renderer);
@@ -134,6 +126,10 @@ void import_info_runways(char* file, struct runway* rwy, int* num_rwys)
 
 
 	f=fopen(file, "r");
+	if(f == NULL){
+		fprintf(stderr,"Error opening file\n");
+		exit(1);
+	}
 
 	while(fgets(buffer,buf_size,f)&&(*num_rwys<=max_num_rwys))
 	{
@@ -452,7 +448,7 @@ void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt)
 }
 
 /******************************************************************************************************************************************/
-void acender_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on)
+void draw_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on)
 {
 	float x=w_height+(w_width-w_height)/3;
 	float r=w_height/12;
@@ -564,24 +560,16 @@ void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course){
 	}
 }
 
-
-/**********CAROLINA***********************************************************************/
-//Acrescentar int size no draw text!! e multiplicar pelo tamanho
-//Tirar tbm as linhas 412:
-//SDL_Rect freq={x-2*r, r/2, (w_width-w_height)*0.8, 2*r};
-//e 421 da função DRAW MARKER LIGHTS
-//SDL_RenderFillRect(renderer, &freq);
-//finalmente nao esquecer de por no .h e escrever na main (antes ou depois do draw compass):
-//write_freq(renderer, sel_freq);
 void write_freq(SDL_Renderer *renderer, float frequency){
 
 	int rectx = w_height/2+w_width/3;
 	int recty = w_height/24;
 	int rect_width = (w_width-w_height)*0.8;
 	int rect_height = w_height/6;
-	char f[5];
+	char f[10];
 
-	gcvt(frequency,5,f);
+	sprintf(f, "%4.1f", frequency);
+	//gcvt(frequency,5,f);
 	SDL_Rect freq = {rectx, recty, rect_width, rect_height};
 	TTF_Font *font = TTF_OpenFont("FreeMonoOblique.ttf", 24);
 
@@ -591,12 +579,10 @@ void write_freq(SDL_Renderer *renderer, float frequency){
 
 }
 
-//CAROLINA::::: BANDEIRAS
-// o tiago puxou algumas cenas da main para dentro do ciclo
 void draw_state(SDL_Renderer *renderer, int bandeira){
 	//Desenhar quadradinhos (tirar da funçao draw_indicator
-	float x=w_height/2;
-	float r=x-50;
+	//float x=w_height/2;
+	//float r=x-50;
 
 	int xgs=w_height/6;
 	int ygs=3*w_height/8;
@@ -605,7 +591,7 @@ void draw_state(SDL_Renderer *renderer, int bandeira){
 
 	int xnav=13*w_height/24;
 
-	
+
 	SDL_Rect flag_nav={xnav, xgs,hgs, wgs};
 	SDL_Rect flag_gs={xgs,ygs, wgs, hgs};
 
@@ -616,7 +602,7 @@ void draw_state(SDL_Renderer *renderer, int bandeira){
 	SDL_RenderFillRect(renderer, &flag_gs);
 	// int b=0;  // Testar com OFF
 	//Escrever GS
-	
+
 	draw_text(renderer, xgs+wgs/3,ygs+hgs/5 , 0, 1, "GS", font);
 	//Escrever OFF/NAV
 	if (bandeira==0){
@@ -629,12 +615,12 @@ void draw_state(SDL_Renderer *renderer, int bandeira){
 		draw_text(renderer, xnav+hgs/3, xgs+wgs/3, 0, 1, "F", font);
 		draw_text(renderer, xnav+hgs/3, xgs+2*wgs/3, 0, 1, "F", font);
 	}
-	
+
 }
 
 /*********************************************************************************/
 //CAROLINA - BOTAO!!!!!!
-void botao(){
+void botao(void){
 	int x, y;
 	SDL_Event botao;
 	SDL_GetMouseState(&x,&y);
@@ -651,4 +637,6 @@ void botao(){
 	draw_state
 	*Nao acabada* Botao
 
+ 
 */
+

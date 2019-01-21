@@ -1,9 +1,6 @@
 #ifndef RECEPTION_H
 #define RECEPTION_H
 
-#define DEBUG
-#define STORE
-
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -59,8 +56,6 @@ void* reception_thread(void* ptr){
     const int latitude_idx = 0;
     const int longitude_idx = 4;
     const int altitude_idx = 8;
-    const int heading_idx = 12;
-    int i;
 
     while(1){
 
