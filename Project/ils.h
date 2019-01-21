@@ -66,8 +66,8 @@ int quit(void);
 
 void draw_text(SDL_Renderer *renderer, int x, int y, float angle, int size, char* text, TTF_Font *font);
 void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course);
-void draw_state(SDL_Renderer *renderer, int bandeira);
-void write_freq(SDL_Renderer *renderer, float frequency);
+void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font);
+void write_freq(SDL_Renderer *renderer, float frequency, TTF_Font *font);
 void draw_markerlights(SDL_Renderer* renderer);
 
 void botao(void);
