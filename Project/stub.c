@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 
     printf("Sends a message when you hit enter.");
 
-    double value=0;
+    float value=0;
     char buf[200];
     int n;
 
@@ -40,8 +40,9 @@ int main(int argc, char **argv){
         memcpy(buf, &value, sizeof(value));
         memcpy(buf+sizeof(value), &value, sizeof(value));
         memcpy(buf+2*sizeof(value), &value, sizeof(value));
+        memcpy(buf+3*sizeof(value), &value, sizeof(value));
         value += 1.0;
-        n=sendto(sockfd, buf, 3*sizeof(value), 0, (struct sockaddr*)&server_addr, sizeof(server_addr));
+        n=sendto(sockfd, buf, 4*sizeof(value), 0, (struct sockaddr*)&server_addr, sizeof(server_addr));
         printf("Sent %d bytes\n", n);
     }
 }
