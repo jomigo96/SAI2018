@@ -87,7 +87,8 @@ int main(int argc, char** argv){
 			bandeira=1;
 
 		draw_CDI(renderer, x_sum_pt, y_sum_pt);
-		draw_text(renderer, 0, 50, "Hello World!", font);
+		//draw_text(renderer, 250, 20, 90, "N", font);
+		draw_compass(renderer, font, 60*DEG_to_RAD);
 		acender_beacons(renderer, im_on, mm_on, om_on, &b_on);
 
 		SDL_RenderPresent(renderer);
@@ -100,6 +101,7 @@ int main(int argc, char** argv){
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+	TTF_Quit();
 	pthread_cancel(tid);
 	return 0;
 }
@@ -482,7 +484,7 @@ void quit(int* running)
 	}
 }
 /*********************************************************************************/
-void draw_text(SDL_Renderer *renderer, int x, int y, char* text, TTF_Font *font)
+void draw_text(SDL_Renderer *renderer, int x, int y, float angle, char* text, TTF_Font *font)
 {
 
 	int text_width;
@@ -502,7 +504,45 @@ void draw_text(SDL_Renderer *renderer, int x, int y, char* text, TTF_Font *font)
     rect.w = text_width;
     rect.h = text_height;
 
-	SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+
+	SDL_RenderCopyEx(renderer, texture, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
 	SDL_DestroyTexture(texture);
 
+}
+
+void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course){
+
+	int text_width;
+    int text_height;
+    SDL_Surface *surface;
+    const SDL_Color textColor = {255, 255, 255, 0};
+	SDL_Texture *texture;
+	SDL_Rect rect;
+
+	const int center_x=233;
+	const int center_y=240;
+	const int radius=220;
+
+	const int angles[8] = {0, 45, 90, 135, 180, 225, 270, 315};
+
+
+	int i;
+	char text[32];
+
+	for(i=0; i<8; i++){
+		sprintf(text, "%d", angles[i]);
+		surface = TTF_RenderText_Solid(font, text, textColor);
+	    texture = SDL_CreateTextureFromSurface(renderer, surface);
+	    text_width = surface->w;
+	    text_height = surface->h;
+	    rect.w = text_width;
+	    rect.h = text_height;
+		rect.x = center_x + sin(-course + i*PI/4)*radius;
+	    rect.y = center_y - cos(-course + i*PI/4)*radius;
+
+		SDL_RenderCopyEx(renderer, texture, NULL, &rect, 45*i-course*RAD_to_DEG, NULL, SDL_FLIP_NONE);
+		SDL_DestroyTexture(texture);
+		SDL_FreeSurface(surface);
+	}
 }
