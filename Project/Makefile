@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -pedantic -Wall -std=c99 -I/usr/include/SDL2
+CFLAGS = -pedantic -Wall -std=c99 -I/usr/include/SDL2 -D_POSIX_C_SOURCE
 LDFLAGS = -lm -lGL -lSDL2 -lpthread -lSDL2_ttf
 DEPTS = ils.h reception_thread.h
 OBJ = ils.o

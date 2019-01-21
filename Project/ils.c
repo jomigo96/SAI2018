@@ -1,5 +1,7 @@
+#include <signal.h>
 # include "ils.h"
 # include "reception_thread.h"
+
 
 // Global variables
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -11,7 +13,6 @@ int main(int argc, char** argv){
 	int running=1;
 	int new=1;
 	unsigned int starting_tick;
-	SDL_Event event;
 	SDL_Renderer* renderer=NULL;
 	SDL_Window* window;
 
@@ -36,7 +37,14 @@ int main(int argc, char** argv){
     pthread_t tid;
     pthread_create(&tid, NULL, reception_thread, &port);
 
+
+	struct sigaction action;
+	sigaction(SIGINT, NULL, &action);
 	SDL_Init ( SDL_INIT_VIDEO );
+	sigaction(SIGINT, &action, NULL); //SDL overwrites the CTRL-C signal
+
+
+
 	window = SDL_CreateWindow("Indicador ILS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w_width, w_height, SDL_WINDOW_OPENGL );
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	TTF_Init();
@@ -51,12 +59,10 @@ int main(int argc, char** argv){
 	import_info_runways(argv[1], rwy, &num_rwys);
 	runway_coordinates_to_ecef(rwy, num_rwys);
 
-	bandeira=0; in_loc=0; in_gs=0; om_on=0; mm_on=0; im_on=0;
-
-	detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
-
 	while(running){
 
+		bandeira=0; in_loc=0; in_gs=0; om_on=0; mm_on=0; im_on=0;
+		detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
 		if(sel_rwy!=-1)
 		{
 			//rececao da posição;
@@ -97,17 +103,17 @@ int main(int argc, char** argv){
 			draw_indicator(renderer);
 			draw_CDI(renderer, x_sum_pt, y_sum_pt);
 			//draw_text(renderer, 250, 20, 0, "N", font);
-			draw_compass(renderer, font, p.heading*DEG_to_RAD);
-			acender_beacons(renderer, im_on, mm_on, om_on, &b_on);
+			draw_compass(renderer, font, rwy[sel_rwy].orientacao);
+			draw_beacons(renderer, im_on, mm_on, om_on, &b_on);
 
 			SDL_RenderPresent(renderer);
 		}
 
-		/*
-		starting_tick = SDL_GetTicks();
-		if ((1000/fps)>SDL_GetTicks()-starting_tick)
-			SDL_Delay(1000/fps-(SDL_GetTicks()-starting_tick));
-		*/
+
+		/*starting_tick = SDL_GetTicks();
+		if ((1000/fps)<(SDL_GetTicks()-starting_tick))
+			SDL_Delay(1000/fps-(SDL_GetTicks()-starting_tick));*/
+
 		running = quit();
 	}
 	SDL_DestroyRenderer(renderer);
@@ -377,7 +383,6 @@ void draw_indicator(SDL_Renderer* renderer)
 	SDL_RenderFillRect(renderer, &flag_nav);
 	SDL_RenderFillRect(renderer, &flag_gs);
 
-	draw_markerlights(renderer);
 }
 
 /******************************************************************************************************************************************/
@@ -395,31 +400,6 @@ void draw_circle(SDL_Renderer* renderer, float x0, float y0, float raioext, floa
 			teta=teta+PI/(r*8);
 		}
 		r++;
-	}
-}
-
-/******************************************************************************************************************************************/
-void draw_markerlights(SDL_Renderer* renderer){
-
-	int i;
-
-	float x=w_height+(w_width-w_height)/3;
-	float r=w_height/12;
-	float y=w_height-1.5*r;
-
-
-	SDL_Rect freq={x-2*r, r/2, (w_width-w_height)*0.8, 2*r};
-
-	SDL_SetRenderDrawColor(renderer, 160, 160, 160, SDL_ALPHA_OPAQUE);
-	draw_circle(renderer, x, y, r, 0);
-	SDL_SetRenderDrawColor(renderer, 102, 51, 0, SDL_ALPHA_OPAQUE);
-	draw_circle(renderer, x, y-3*r, r, 0);
-	SDL_SetRenderDrawColor(renderer, 0, 51, 102, SDL_ALPHA_OPAQUE);
-	draw_circle(renderer, x, y-6*r, r, 0);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	SDL_RenderFillRect(renderer, &freq);
-	for (i=0; i<3; i++){
-		draw_circle(renderer, x, y-r*3*i, r+1, r);
 	}
 }
 
@@ -444,11 +424,27 @@ void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt)
 }
 
 /******************************************************************************************************************************************/
-void acender_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on)
+void draw_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on)
 {
 	float x=w_height+(w_width-w_height)/3;
 	float r=w_height/12;
 	float y=w_height-1.5*r;
+
+	int i;
+
+	SDL_Rect freq={x-2*r, r/2, (w_width-w_height)*0.8, 2*r};
+
+	SDL_SetRenderDrawColor(renderer, 160, 160, 160, SDL_ALPHA_OPAQUE);
+	draw_circle(renderer, x, y, r, 0);
+	SDL_SetRenderDrawColor(renderer, 102, 51, 0, SDL_ALPHA_OPAQUE);
+	draw_circle(renderer, x, y-3*r, r, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 51, 102, SDL_ALPHA_OPAQUE);
+	draw_circle(renderer, x, y-6*r, r, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+	SDL_RenderFillRect(renderer, &freq);
+	for (i=0; i<3; i++){
+		draw_circle(renderer, x, y-r*3*i, r+1, r);
+	}
 
 	*b_on=*b_on+1;
 

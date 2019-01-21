@@ -2,6 +2,7 @@
 #define RECEPTION_H
 
 #define DEBUG
+#define STORE
 
 #include <pthread.h>
 #include <sys/types.h>
@@ -23,7 +24,6 @@ extern int ready;
 extern struct position_gps position;
 
 void* reception_thread(void* ptr){
-
 
     // Setup UDP socket
     struct sockaddr_in serveraddr, clientaddr;
@@ -60,28 +60,42 @@ void* reception_thread(void* ptr){
     const int longitude_idx = 4;
     const int altitude_idx = 8;
     const int heading_idx = 12;
-
+    int i;
 
     while(1){
 
         byte_count = recvfrom(sockfd, buf, sizeof(buf), 0,
                          (struct sockaddr*)&clientaddr, (socklen_t*)&clientlen);
-        if(byte_count){
+        if(byte_count>0){
+
+            buf[byte_count]=0;
+
             pthread_mutex_lock(&m);
-            position.latitude = *(float*)(buf+latitude_idx);
-            position.longitude = *(float*)(buf+longitude_idx);
-            position.altitude = *(float*)(buf+altitude_idx);
-            position.heading = *(float*)(buf+heading_idx);
+            position.latitude =  *(float*)(buf+latitude_idx)*DEG_to_RAD;
+            position.longitude = *(float*)(buf+longitude_idx)*DEG_to_RAD;
+            position.altitude =  *(float*)(buf+altitude_idx)*DEG_to_RAD;
             ready = 1;
             pthread_mutex_unlock(&m);
 
-            #ifdef DEBUG
+
 			printf("Received %ld bytes: ", byte_count);
-            printf("Lat:%f Lon:%f Hei:%f Hea:%f\n", position.latitude,
+            printf("\n");
+
+            printf("Lat:%f Lon:%f Hei:%f\n", position.latitude,
                                                     position.longitude,
-                                                    position.altitude,
-                                                    position.heading);
-            #endif //DEBUG
+                                                    position.altitude);
+
+            //float *f=&(position.latitude);
+            //char *c = (char*)f;
+
+            //printf("%d %d %d %d\n", (int)c[0], (int)c[1], (int)c[2], (int)c[3]);
+
+            /*
+            printf("%10.4f;%10.4f;%10.4f\n", position.latitude,
+                                                    position.longitude,
+                                                    position.altitude);
+                                                    */
+
         }
     }
 }

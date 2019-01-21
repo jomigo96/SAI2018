@@ -38,7 +38,6 @@ struct position_gps {
 	float latitude;	//em [rad]
 	float longitude;	//em [rad]
 	float altitude;	//em [m]
-	float heading;  // em [deg, 0-360]
 };
 
 struct position {
@@ -61,9 +60,8 @@ void movimento_ponteiro_glide_slope(double gs_ang, double* y_sum_pt);
 void in_markers(struct position p_enu, struct runway* rwy, int sel_rwy, double loc_ang, int* im_on, int* mm_on, int* om_on);
 void draw_indicator(SDL_Renderer* renderer);
 void draw_circle(SDL_Renderer* renderer, float x0, float y0, float raioext, float raioint);
-void draw_markerlights(SDL_Renderer* renderer);
 void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt);
-void acender_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on);
+void draw_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on);
 int quit(void);
 
 void draw_text(SDL_Renderer *renderer, int x, int y, float angle, char* text, TTF_Font *font);
