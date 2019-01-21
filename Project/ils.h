@@ -1,12 +1,13 @@
 #ifndef ILS_H
 #define ILS_H
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <math.h>
-# include <GL/gl.h>
-# include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <GL/gl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 # define PI 3.14159
 # define DEG_to_RAD (PI/180.0)
@@ -64,5 +65,7 @@ void draw_markerlights(SDL_Renderer* renderer);
 void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt);
 void acender_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on);
 void quit(int* running);
+
+void draw_text(SDL_Renderer *renderer, int x, int y, char* text, TTF_Font *font);
 
 #endif //ILS_H

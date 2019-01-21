@@ -38,6 +38,12 @@ int main(int argc, char** argv){
 	SDL_Init ( SDL_INIT_VIDEO );
 	window = SDL_CreateWindow("Indicador ILS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w_width, w_height, SDL_WINDOW_OPENGL );
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	TTF_Init();
+	TTF_Font *font = TTF_OpenFont("FreeMonoOblique.ttf", 24);
+	if(font == NULL){
+		fprintf(stderr, "Error opening font\n");
+		exit(1);
+	}
 
 	draw_indicator(renderer);
 
@@ -81,6 +87,7 @@ int main(int argc, char** argv){
 			bandeira=1;
 
 		draw_CDI(renderer, x_sum_pt, y_sum_pt);
+		draw_text(renderer, 0, 50, "Hello World!", font);
 		acender_beacons(renderer, im_on, mm_on, om_on, &b_on);
 
 		SDL_RenderPresent(renderer);
@@ -473,4 +480,29 @@ void quit(int* running)
 			*running = 0;
 			break;		      }
 	}
+}
+/*********************************************************************************/
+void draw_text(SDL_Renderer *renderer, int x, int y, char* text, TTF_Font *font)
+{
+
+	int text_width;
+    int text_height;
+    SDL_Surface *surface;
+    const SDL_Color textColor = {255, 255, 255, 0};
+	SDL_Texture *texture;
+	SDL_Rect rect;
+
+    surface = TTF_RenderText_Solid(font, text, textColor);
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    text_width = surface->w;
+    text_height = surface->h;
+    SDL_FreeSurface(surface);
+    rect.x = x;
+    rect.y = y;
+    rect.w = text_width;
+    rect.h = text_height;
+
+	SDL_RenderCopy(renderer, texture, NULL, &rect);
+	SDL_DestroyTexture(texture);
+
 }
