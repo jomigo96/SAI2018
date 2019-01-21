@@ -64,7 +64,7 @@ void draw_circle(SDL_Renderer* renderer, float x0, float y0, float raioext, floa
 void draw_markerlights(SDL_Renderer* renderer);
 void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt);
 void acender_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on);
-void quit(int* running);
+int quit(void);
 
 void draw_text(SDL_Renderer *renderer, int x, int y, float angle, char* text, TTF_Font *font);
 void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course);

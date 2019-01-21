@@ -9,6 +9,7 @@ struct position_gps position;
 int main(int argc, char** argv){
 
 	int running=1;
+	int new=1;
 	unsigned int starting_tick;
 	SDL_Event event;
 	SDL_Renderer* renderer=NULL;
@@ -45,58 +46,69 @@ int main(int argc, char** argv){
 		exit(1);
 	}
 
-	draw_indicator(renderer);
+
 
 	import_info_runways(argv[1], rwy, &num_rwys);
 	runway_coordinates_to_ecef(rwy, num_rwys);
 
-	while(running)
-	{
-		bandeira=0; in_loc=0; in_gs=0; om_on=0; mm_on=0; im_on=0;
+	bandeira=0; in_loc=0; in_gs=0; om_on=0; mm_on=0; im_on=0;
 
-		detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
+	detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
+
+	while(running){
+
 		if(sel_rwy!=-1)
 		{
 			//rececao da posição;
 			pthread_mutex_lock(&m);
 			if(ready){
+				new=1;
 				p=position;
 				ready=0;
 			}
 			pthread_mutex_unlock(&m);
 
-			coordenadas_gps_to_ecef(p, &p_ecef);
-			coordenadas_ecef_to_enu(rwy, sel_rwy, p_ecef, &p_enu);
+			if(new){
+				new=0;
 
-			distance_to_runway(p_enu, &dist_rwy);
-			if(dist_rwy<18*NM_to_m)
-			{
-				in_localizer(p_enu, rwy, sel_rwy, &in_loc, &loc_ang);
-				if (in_loc==1)
+				SDL_RenderClear(renderer);
+
+				coordenadas_gps_to_ecef(p, &p_ecef);
+				coordenadas_ecef_to_enu(rwy, sel_rwy, p_ecef, &p_enu);
+
+				distance_to_runway(p_enu, &dist_rwy);
+				if(dist_rwy<18*NM_to_m)
 				{
-					movimento_ponteiro_localizer(loc_ang, &x_sum_pt);
-					in_glide_slope(p_enu, rwy, sel_rwy, dist_rwy, &in_gs, &gs_ang);
-					if (in_gs==1)
-						movimento_ponteiro_glide_slope(gs_ang, &y_sum_pt);
-					in_markers(p_enu, rwy, sel_rwy, loc_ang, &im_on, &mm_on, &om_on);
+					in_localizer(p_enu, rwy, sel_rwy, &in_loc, &loc_ang);
+					if (in_loc==1)
+					{
+						movimento_ponteiro_localizer(loc_ang, &x_sum_pt);
+						in_glide_slope(p_enu, rwy, sel_rwy, dist_rwy, &in_gs, &gs_ang);
+						if (in_gs==1)
+							movimento_ponteiro_glide_slope(gs_ang, &y_sum_pt);
+						in_markers(p_enu, rwy, sel_rwy, loc_ang, &im_on, &mm_on, &om_on);
+					} else
+						bandeira=1;
 				} else
 					bandeira=1;
 			} else
 				bandeira=1;
-		} else
-			bandeira=1;
 
-		draw_CDI(renderer, x_sum_pt, y_sum_pt);
-		//draw_text(renderer, 250, 20, 90, "N", font);
-		draw_compass(renderer, font, 60*DEG_to_RAD);
-		acender_beacons(renderer, im_on, mm_on, om_on, &b_on);
+			draw_indicator(renderer);
+			draw_CDI(renderer, x_sum_pt, y_sum_pt);
+			//draw_text(renderer, 250, 20, 0, "N", font);
+			draw_compass(renderer, font, p.heading*DEG_to_RAD);
+			acender_beacons(renderer, im_on, mm_on, om_on, &b_on);
 
-		SDL_RenderPresent(renderer);
+			SDL_RenderPresent(renderer);
+		}
+
+		/*
 		starting_tick = SDL_GetTicks();
 		if ((1000/fps)>SDL_GetTicks()-starting_tick)
 			SDL_Delay(1000/fps-(SDL_GetTicks()-starting_tick));
-
-		quit(&running);
+		*/
+		running = quit();
 	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -472,16 +484,13 @@ void acender_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, in
 }
 
 /******************************************************************************************************************************************/
-void quit(int* running)
+int quit(void)
 {
 	SDL_Event event;
 
-	while(SDL_PollEvent(&event))
-	{
-		if ( event.type == SDL_QUIT ) {
-			*running = 0;
-			break;		      }
-	}
+	SDL_PollEvent(&event);
+
+	return (event.type != SDL_QUIT);
 }
 /*********************************************************************************/
 void draw_text(SDL_Renderer *renderer, int x, int y, float angle, char* text, TTF_Font *font)
@@ -520,17 +529,17 @@ void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course){
 	SDL_Texture *texture;
 	SDL_Rect rect;
 
-	const int center_x=233;
+	const int center_x=240;
 	const int center_y=240;
 	const int radius=220;
 
-	const int angles[8] = {0, 45, 90, 135, 180, 225, 270, 315};
+	const int angles[12] = {0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33};
 
 
 	int i;
 	char text[32];
 
-	for(i=0; i<8; i++){
+	for(i=0; i<12; i++){
 		sprintf(text, "%d", angles[i]);
 		surface = TTF_RenderText_Solid(font, text, textColor);
 	    texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -538,10 +547,10 @@ void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course){
 	    text_height = surface->h;
 	    rect.w = text_width;
 	    rect.h = text_height;
-		rect.x = center_x + sin(-course + i*PI/4)*radius;
-	    rect.y = center_y - cos(-course + i*PI/4)*radius;
+		rect.x = center_x + sin(-course + i*PI/6)*radius;
+	    rect.y = center_y - cos(-course + i*PI/6)*radius;
 
-		SDL_RenderCopyEx(renderer, texture, NULL, &rect, 45*i-course*RAD_to_DEG, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, texture, NULL, &rect, 30*i-course*RAD_to_DEG, NULL, SDL_FLIP_NONE);
 		SDL_DestroyTexture(texture);
 		SDL_FreeSurface(surface);
 	}
