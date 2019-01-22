@@ -68,7 +68,7 @@ void* reception_thread(void* ptr){
             pthread_mutex_lock(&m);
             position.latitude =  *(float*)(buf+latitude_idx)*DEG_to_RAD;
             position.longitude = *(float*)(buf+longitude_idx)*DEG_to_RAD;
-            position.altitude =  *(float*)(buf+altitude_idx)*DEG_to_RAD;
+            position.altitude =  *(float*)(buf+altitude_idx);
             ready = 1;
             pthread_mutex_unlock(&m);
 
