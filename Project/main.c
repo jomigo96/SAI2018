@@ -12,13 +12,12 @@ int main(int argc, char** argv){
 
 	int running=1;
 	int new=1;
-	SDL_Event event;
 	SDL_Renderer* renderer=NULL;
 	SDL_Window* window;
 
 	int num_rwys=0, sel_rwy, b_on=0;
 	int bandeira=0, in_loc=0, in_gs=0, im_on=0, mm_on=0, om_on=0;
-	double sel_freq=109.5;
+	int sel_freq=1095;
 	double dist_rwy, loc_ang, gs_ang;
 	double x_sum_pt=0, y_sum_pt=0;
 
@@ -30,12 +29,12 @@ int main(int argc, char** argv){
 	if(argc != 3){
         fprintf(stderr, "usage: %s <runway file path> <port>\n", argv[0]);
         exit(1);
-    }
-    uint32_t port = atoi(argv[2]);
+	}
+	uint32_t port = atoi(argv[2]);
 
 	// Launch data gatherer thread
-    pthread_t tid;
-    pthread_create(&tid, NULL, reception_thread, &port);
+	pthread_t tid;
+	pthread_create(&tid, NULL, reception_thread, &port);
 	
 	struct sigaction action;
 	sigaction(SIGINT, NULL, &action);
@@ -95,17 +94,18 @@ int main(int argc, char** argv){
 			} else
 				bandeira=1;
 
-		}
+		}else
+			bandeira=1;
+
 		draw_indicator(renderer);
-		draw_CDI(renderer, x_sum_pt, y_sum_pt);
-		//draw_text(renderer, 250, 20, 0, "N", font);
-		draw_compass(renderer, font, rwy[sel_rwy].orientacao);
-		write_freq(renderer, sel_freq, font);
+		draw_compass(renderer, font, rwy[sel_rwy].or_local);
+		write_freq(renderer, sel_freq/10.0, font);
+		name_markers( renderer, font);
 		draw_beacons(renderer, im_on, mm_on, om_on, &b_on);
 		draw_state(renderer, bandeira, font);
+		draw_CDI(renderer, x_sum_pt, y_sum_pt);
+		botao(renderer, &sel_freq);
 		SDL_RenderPresent(renderer);
-		//botao();
-
 
 		running = quit();
 	}

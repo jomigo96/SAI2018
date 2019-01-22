@@ -20,6 +20,7 @@
 
 
 struct runway {
+	double or_local;	//em [rad]
 	double orientacao;	//em [rad]
 	double latitude_thr;	//em [rad]
 	double longitude_thr;	//em [rad]
@@ -35,9 +36,9 @@ struct runway {
 };
 
 struct position_gps {
-	float latitude;	//em [rad]
+	float latitude;		//em [rad]
 	float longitude;	//em [rad]
-	float altitude;	//em [m]
+	float altitude;		//em [m]
 };
 
 struct position {
@@ -48,7 +49,7 @@ struct position {
 
 void import_info_runways(char* file, struct runway* rwy, int* num_rwys);
 void runway_coordinates_to_ecef(struct runway* rwy, int num_rwys);
-void detect_sel_runway(struct runway* rwy, int num_rwys, double sel_freq, int* sel_rwy);
+void detect_sel_runway(struct runway* rwy, int num_rwys, int sel_freq, int* sel_rwy);
 void coordenadas_gps_to_ecef(struct position_gps p, struct position* p_ecef);
 void coordenadas_ecef_to_enu(struct runway* rwy, int sel_rwy, struct position p_ecef, struct position* p_enu);
 void distance_to_runway(struct position p_enu, double* dist_rwy);
@@ -62,13 +63,11 @@ void draw_indicator(SDL_Renderer* renderer);
 void draw_circle(SDL_Renderer* renderer, float x0, float y0, float raioext, float raioint);
 void draw_CDI(SDL_Renderer* renderer, double x_sum_pt, double y_sum_pt);
 void draw_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* b_on);
-int quit(void);
-
 void draw_text(SDL_Renderer *renderer, int x, int y, float angle, int size, char* text, TTF_Font *font);
 void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course);
 void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font);
 void write_freq(SDL_Renderer *renderer, float frequency, TTF_Font *font);
-void draw_markerlights(SDL_Renderer* renderer);
-
-void botao(void);
+void botao(SDL_Renderer* renderer, int* sel_freq);
+void name_markers(SDL_Renderer* renderer, TTF_Font *font);
+int quit(void);
 #endif //ILS_H

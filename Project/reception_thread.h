@@ -1,6 +1,9 @@
 #ifndef RECEPTION_H
 #define RECEPTION_H
 
+#define DEBUG
+#define BIGENDIAN
+
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -81,12 +84,17 @@ void* reception_thread(void* ptr){
             buf[byte_count]=0;
 
             pthread_mutex_lock(&m);
+#ifdef BIGENDIAN
+			position.latitude = float_swap(*(float*)(buf+latitude_idx))*DEG_to_RAD;
+			position.longitude = float_swap(*(float*)(buf+longitude_idx))*DEG_to_RAD;
+			position.altitude = float_swap(*(float*)(buf+altitude_idx));
+#else
             position.latitude =  *(float*)(buf+latitude_idx)*DEG_to_RAD;
             position.longitude = *(float*)(buf+longitude_idx)*DEG_to_RAD;
             position.altitude =  *(float*)(buf+altitude_idx);
+#endif
             ready = 1;
             pthread_mutex_unlock(&m);
-
             
 #ifdef DEBUG
             printf("Received %ld bytes: ", byte_count);

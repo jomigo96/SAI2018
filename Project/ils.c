@@ -7,7 +7,7 @@ void import_info_runways(char* file, struct runway* rwy, int* num_rwys)
 	const int buf_size=100;
 	char buffer[buf_size];
 
-	int i, lat_deg, lat_min, lon_deg, lon_min;
+	int i, or_local, lat_deg, lat_min, lon_deg, lon_min;
 	double or, lat_sec, lon_sec, elev, gs, im, mm, om, fr;
 	char lat_char, lon_char;
 
@@ -21,10 +21,11 @@ void import_info_runways(char* file, struct runway* rwy, int* num_rwys)
 	while(fgets(buffer,buf_size,f)&&(*num_rwys<=max_num_rwys))
 	{
 		for(i=0; buffer[i]!=';' ;i++);
-		sscanf(buffer+i+1,"%lf;%dº%d\'%lf\"%c;%dº%d\'%lf\"%c;%lf;%lf;%lf;%lf;%lf;%lf;\n",
-					&or, &lat_deg, &lat_min, &lat_sec, &lat_char, &lon_deg, &lon_min,
+		sscanf(buffer+i+1,"RWY%d;%lf;%dº%d\'%lf\"%c;%dº%d\'%lf\"%c;%lf;%lf;%lf;%lf;%lf;%lf;\n",
+					&or_local, &or, &lat_deg, &lat_min, &lat_sec, &lat_char, &lon_deg, &lon_min,
 					&lon_sec, &lon_char, &elev, &gs, &im, &mm, &om, &fr);
 
+		rwy[*num_rwys].or_local = or_local*10*DEG_to_RAD;
 		rwy[*num_rwys].orientacao = or*DEG_to_RAD;
 		rwy[*num_rwys].latitude_thr =(lat_char=='N'?1:-1)*(lat_deg+lat_min/60.0+lat_sec/3600.0)*DEG_to_RAD;
 		rwy[*num_rwys].longitude_thr=(lon_char=='E'?1:-1)*(lon_deg+lon_min/60.0+lon_sec/3600.0)*DEG_to_RAD;
@@ -62,13 +63,13 @@ void runway_coordinates_to_ecef(struct runway* rwy, int num_rwys)
 }
 
 /******************************************************************************************************************************************/
-void detect_sel_runway(struct runway* rwy, int num_rwys, double sel_freq, int* sel_rwy)
+void detect_sel_runway(struct runway* rwy, int num_rwys, int sel_freq, int* sel_rwy)
 {
 	int i;
-
+		
 	for(i=0; i<num_rwys; i++)
 	{
-		if (rwy[i].freq == sel_freq){
+		if (rwy[i].freq == sel_freq/10.0){
 			*sel_rwy = i;
 			return;		    }
 	}
@@ -213,17 +214,17 @@ void in_markers(struct position p_enu, struct runway* rwy, int sel_rwy, double l
 
 	if ((loc_ang>-3.75*DEG_to_RAD)&&(loc_ang<3.75*DEG_to_RAD)){
 		h_dist=sqrt(pow(p_enu.x,2)+pow(p_enu.y,2));
-		if ((h_dist<rwy[sel_rwy].om+300)&&(h_dist>rwy[sel_rwy].om-300)){
+		if ((h_dist<rwy[sel_rwy].om+340)&&(h_dist>rwy[sel_rwy].om-340)){
 			if (p_enu.z<1200){
 				*om_on=1;
 				return;  }
 		}
-		if ((h_dist<rwy[sel_rwy].mm+150)&&(h_dist>rwy[sel_rwy].om-150)){
+		if ((h_dist<rwy[sel_rwy].mm+120)&&(h_dist>rwy[sel_rwy].mm-120)){
 			if (p_enu.z<600){
 				*mm_on=1;
 				return; }
 		}
-		if ((h_dist<rwy[sel_rwy].im+75)&&(h_dist>rwy[sel_rwy].om-75)){
+		if ((h_dist<rwy[sel_rwy].im+70)&&(h_dist>rwy[sel_rwy].im-70)){
 			if (p_enu.z<300){
 				*im_on=1;
 				return; }
@@ -263,7 +264,6 @@ void draw_indicator(SDL_Renderer* renderer)
 	SDL_RenderFillRect(renderer, &flag_nav);
 	SDL_RenderFillRect(renderer, &flag_gs);*/
 
-	draw_markerlights(renderer);
 
 	//CAROLINA ACRESCENTOU::::
 	//draw_circle(renderer, x0, y0, );
@@ -286,31 +286,6 @@ void draw_circle(SDL_Renderer* renderer, float x0, float y0, float raioext, floa
 			teta=teta+PI/(r*8);
 		}
 		r++;
-	}
-}
-
-/******************************************************************************************************************************************/
-void draw_markerlights(SDL_Renderer* renderer){
-
-	int i;
-
-	float x=w_height+(w_width-w_height)/3;
-	float r=w_height/12;
-	float y=w_height-1.5*r;
-
-
-	//SDL_Rect freq={x-2*r, r/2, (w_width-w_height)*0.8, 2*r};
-
-	SDL_SetRenderDrawColor(renderer, 160, 160, 160, SDL_ALPHA_OPAQUE);
-	draw_circle(renderer, x, y, r, 0);
-	SDL_SetRenderDrawColor(renderer, 102, 51, 0, SDL_ALPHA_OPAQUE);
-	draw_circle(renderer, x, y-3*r, r, 0);
-	SDL_SetRenderDrawColor(renderer, 0, 51, 102, SDL_ALPHA_OPAQUE);
-	draw_circle(renderer, x, y-6*r, r, 0);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-	//SDL_RenderFillRect(renderer, &freq);
-	for (i=0; i<3; i++){
-		draw_circle(renderer, x, y-r*3*i, r+1, r);
 	}
 }
 
@@ -340,34 +315,42 @@ void draw_beacons(SDL_Renderer* renderer, int im_on, int mm_on, int om_on, int* 
 	float x=w_height+(w_width-w_height)/3;
 	float r=w_height/12;
 	float y=w_height-1.5*r;
-
+	
+				
+	SDL_SetRenderDrawColor(renderer, 160, 160, 160, SDL_ALPHA_OPAQUE);
+	draw_circle(renderer, x, y, r, 0);
+	SDL_SetRenderDrawColor(renderer, 102, 51, 0, SDL_ALPHA_OPAQUE);
+	draw_circle(renderer, x, y-3*r, r, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 51, 102, SDL_ALPHA_OPAQUE);
+	draw_circle(renderer, x, y-6*r, r, 0);
+	
 	*b_on=*b_on+1;
 
-	if (*b_on==fps*2)
+	if (*b_on==fps/2)
 		*b_on=0;
 
 	if (om_on==1) {
-		if(*b_on==fps)
+		if(*b_on==fps/2)
 			*b_on=0;
-		if(*b_on<=fps/2)
+		if(*b_on<=fps/4)
 			SDL_SetRenderDrawColor(renderer, 0, 128, 255, SDL_ALPHA_OPAQUE);
 		else
 			SDL_SetRenderDrawColor(renderer, 0, 51, 102, SDL_ALPHA_OPAQUE);
 		draw_circle(renderer, x, y-6*r, r, 0); }
 
 	else if(mm_on==1) {
-		if(*b_on==fps/2)
+		if(*b_on==fps/4)
 			*b_on=0;
-		if(*b_on<=fps/4)
+		if(*b_on<=fps/8)
 			SDL_SetRenderDrawColor(renderer, 255, 153, 51, SDL_ALPHA_OPAQUE);
 		else
 			SDL_SetRenderDrawColor(renderer, 102, 51, 0, SDL_ALPHA_OPAQUE);
 		draw_circle(renderer, x, y-3*r, r, 0); }
 
 	else if(im_on==1) {
-		if(*b_on==fps/4)
+		if(*b_on==fps/8)
 			*b_on=0;
-		if(*b_on<=fps/8)
+		if(*b_on<fps/15)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 		else
 			SDL_SetRenderDrawColor(renderer, 160, 160, 160, SDL_ALPHA_OPAQUE);
@@ -411,6 +394,7 @@ void draw_text(SDL_Renderer *renderer, int x, int y, float angle, int size, char
 
 }
 
+/******************************************************************************************************************************************/
 void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course){
 
 	int text_width;
@@ -447,6 +431,7 @@ void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course){
 	}
 }
 
+/******************************************************************************************************************************************/
 void write_freq(SDL_Renderer *renderer, float frequency, TTF_Font *font){
 
 	int rectx = w_height/2+w_width/3;
@@ -461,10 +446,13 @@ void write_freq(SDL_Renderer *renderer, float frequency, TTF_Font *font){
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderFillRect(renderer, &freq);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+	SDL_RenderDrawRect(renderer, &freq);
 	draw_text(renderer, rectx+rect_width/15, recty+rect_height/5, 0, 2, f, font);
 
 }
 
+/******************************************************************************************************************************************/
 void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font){
 	//Desenhar quadradinhos (tirar da funçao draw_indicator
 	//float x=w_height/2;
@@ -502,25 +490,67 @@ void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font){
 
 }
 
-/*********************************************************************************/
-//CAROLINA - BOTAO!!!!!!
-void botao(void){
+/******************************************************************************************************************************************/
+void botao(SDL_Renderer* renderer, int* sel_freq){
 	int x, y;
+	int rectx1 = w_height/2+w_width/3;
+	int recty1 = w_height/24;
+	int rectx2 = (w_width-w_height)*0.8+rectx1;
+	int recty2 = w_height/6+recty1;
+	int larg = (w_width-w_height)*0.17;
 	SDL_Event botao;
-	SDL_GetMouseState(&x,&y);
-	printf(" x= %d, y= %d \n", x, y);
+	SDL_Rect rect= {rectx2, recty1, larg, w_height/6};
+	SDL_Rect mais= {rectx2, recty1, larg, w_height/12+1};
+	SDL_Rect menos= {rectx2, recty1+w_height/12+1, larg, w_height/12};
+
+	SDL_Rect maishor = {rectx2+larg/4, recty1+(recty2-recty1)/4-1, larg/2 ,2};
+	SDL_Rect maisver = {rectx2+larg/2-1, recty1+(recty2-recty1)/4-larg/4, 2,larg/2};
+	SDL_Rect menoshor = {rectx2+larg/4, recty2-(recty2-recty1)/4-1, larg/2 ,2};
+	
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+	SDL_RenderFillRect(renderer, &rect);
+
+	
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+	SDL_RenderDrawRect(renderer, &mais);
+	SDL_RenderDrawRect(renderer, &menos);	
+	SDL_RenderFillRect(renderer, &maishor);
+	SDL_RenderFillRect(renderer, &menoshor);	
+	SDL_RenderFillRect(renderer, &maisver);
+
+
+	while (SDL_PollEvent(&botao)){
+		if (botao.type==SDL_MOUSEBUTTONDOWN){
+			SDL_GetMouseState(&x,&y);
+			if( (x>=rectx2) && (x<=rectx2+larg) && (y<=recty1+w_height/12+1) && (y>=recty1) ){
+				*sel_freq=*sel_freq+1;
+			}
+			else if( (x>=rectx2) && (x<=rectx2+larg) && (y<=recty2) && (y>=recty1+w_height/12+1) ){
+				*sel_freq=*sel_freq-1;
+			}
+			return;
+		}
+	}
+		
 }
 
+/******************************************************************************************************************************************/
+void name_markers(SDL_Renderer* renderer, TTF_Font *font){
+	
+	float r=w_height/12;
+	float x=w_height+(w_width-w_height)/3+1.2*r;
+	float y=w_height-2*r;
+	float x2 = w_height+(w_width-w_height)/3-1.5*r;
+	float y2 = w_height-9*r;
+	float width=4*r;
+	float height=8.9*r;
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
+	SDL_Rect markers={x2,y2,width,height};
+	SDL_RenderFillRect(renderer, &markers);
 
-
-/*LISTA DE MUDANÇAS DA CAROLINA:
-	draw_text -> acrescentei int size
-	draw marker lights -> tirei os retangulos vermelhos
-	write_freq
-	draw_state
-	*Nao acabada* Botao
-
- 
-*/
-
+	draw_text(renderer, x+0.2*r, y+0.2*r, 0, 1, "IM", font);
+	draw_text(renderer, x+0.2*r, y-2.8*r, 0, 1, "MM",font);
+	draw_text(renderer, x+0.2*r, y-5.8*r, 0, 1, "OM",font);
+	
+}

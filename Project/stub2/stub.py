@@ -20,7 +20,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 address = ('localhost', int(sys.argv[2]))
 
 for d in data:
-    package = struct.pack("<3f", d[0], d[1], d[2])
+    package = struct.pack(">3f", d[0], d[1], d[2])
     sent=sock.sendto(package, address)
     print("Sent {} bytes".format(sent))
     time.sleep(0.005)
