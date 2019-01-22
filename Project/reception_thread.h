@@ -20,6 +20,21 @@ extern pthread_mutex_t m;
 extern int ready;
 extern struct position_gps position;
 
+// Reverses endianess of a floating point value
+float float_swap(float value){
+    union v {
+        float       f;
+        unsigned int    i;
+    };
+     
+    union v val;
+     
+    val.f = value;
+    val.i = htonl(val.i);
+                   
+    return val.f;
+}
+
 void* reception_thread(void* ptr){
 
     // Setup UDP socket
@@ -72,24 +87,15 @@ void* reception_thread(void* ptr){
             ready = 1;
             pthread_mutex_unlock(&m);
 
-
-			printf("Received %ld bytes: ", byte_count);
+            
+#ifdef DEBUG
+            printf("Received %ld bytes: ", byte_count);
             printf("\n");
 
             printf("Lat:%f Lon:%f Hei:%f\n", position.latitude,
                                                     position.longitude,
                                                     position.altitude);
-
-            //float *f=&(position.latitude);
-            //char *c = (char*)f;
-
-            //printf("%d %d %d %d\n", (int)c[0], (int)c[1], (int)c[2], (int)c[3]);
-
-            /*
-            printf("%10.4f;%10.4f;%10.4f\n", position.latitude,
-                                                    position.longitude,
-                                                    position.altitude);
-                                                    */
+#endif
 
         }
     }
