@@ -4,11 +4,11 @@
 void import_info_runways(char* file, struct runway* rwy, int* num_rwys)
 {
 	FILE* f;
-	const int buf_size=70;
+	const int buf_size=100;
 	char buffer[buf_size];
 
-	int i, or, lat_deg, lat_min, lon_deg, lon_min;
-	double lat_sec, lon_sec, elev, gs, im, mm, om, fr;
+	int i, lat_deg, lat_min, lon_deg, lon_min;
+	double or, lat_sec, lon_sec, elev, gs, im, mm, om, fr;
 	char lat_char, lon_char;
 
 
@@ -21,11 +21,11 @@ void import_info_runways(char* file, struct runway* rwy, int* num_rwys)
 	while(fgets(buffer,buf_size,f)&&(*num_rwys<=max_num_rwys))
 	{
 		for(i=0; buffer[i]!=';' ;i++);
-		sscanf(buffer+i+1,"RWY%d;%dº%d\'%lf\"%c;%dº%d\'%lf\"%c;%lf;%lf;%lf;%lf;%lf;%lf;\n",
+		sscanf(buffer+i+1,"%lf;%dº%d\'%lf\"%c;%dº%d\'%lf\"%c;%lf;%lf;%lf;%lf;%lf;%lf;\n",
 					&or, &lat_deg, &lat_min, &lat_sec, &lat_char, &lon_deg, &lon_min,
 					&lon_sec, &lon_char, &elev, &gs, &im, &mm, &om, &fr);
 
-		rwy[*num_rwys].orientacao = or*10.0*DEG_to_RAD;
+		rwy[*num_rwys].orientacao = or*DEG_to_RAD;
 		rwy[*num_rwys].latitude_thr =(lat_char=='N'?1:-1)*(lat_deg+lat_min/60.0+lat_sec/3600.0)*DEG_to_RAD;
 		rwy[*num_rwys].longitude_thr=(lon_char=='E'?1:-1)*(lon_deg+lon_min/60.0+lon_sec/3600.0)*DEG_to_RAD;
 		rwy[*num_rwys].altitude_thr = elev;
@@ -123,15 +123,15 @@ void in_localizer(struct position p_enu, struct runway* rwy, int sel_rwy, int* i
 	double alpha;
 	double h_dist;
 
-	if (p_enu.x==0){
-		if (p_enu.y>=0)
+	if (p_enu.y==0){
+		if (p_enu.x>=0)
 			alpha=PI/2;
 		else
 			alpha=PI;
 	}
 	else{
-		alpha=atan(p_enu.y/p_enu.x);
-		if (p_enu.x<0)
+		alpha=atan(p_enu.x/p_enu.y);
+		if (p_enu.y<0)
 			alpha=alpha+PI;
 		normalizar_angulo(&alpha);
 	}
