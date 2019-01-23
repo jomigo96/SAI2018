@@ -100,8 +100,8 @@ void* reception_thread(void* ptr){
             printf("Received %ld bytes: ", byte_count);
             printf("\n");
 
-            printf("Lat:%f Lon:%f Hei:%f\n", position.latitude,
-                                                    position.longitude,
+            printf("Lat:%f Lon:%f Hei:%f\n", position.latitude*RAD_to_DEG,
+                                                    position.longitude*RAD_to_DEG,
                                                     position.altitude);
 #endif
 

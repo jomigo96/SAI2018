@@ -54,6 +54,4 @@ dkms.conf
 # Temporary files
 *.swp
 
-# Executables
-main
-ils
+stub

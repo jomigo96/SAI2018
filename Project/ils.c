@@ -491,7 +491,9 @@ void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font){
 }
 
 /******************************************************************************************************************************************/
-void botao(SDL_Renderer* renderer, int* sel_freq){
+int botao(SDL_Renderer* renderer, int* sel_freq){
+
+	int state=1;
 	int x, y;
 	int rectx1 = w_height/2+w_width/3;
 	int recty1 = w_height/24;
@@ -528,10 +530,12 @@ void botao(SDL_Renderer* renderer, int* sel_freq){
 			else if( (x>=rectx2) && (x<=rectx2+larg) && (y<=recty2) && (y>=recty1+w_height/12+1) ){
 				*sel_freq=*sel_freq-1;
 			}
-			return;
+			break;
 		}
+		if (botao.type == SDL_QUIT)
+			state = 0;
 	}
-		
+	return state;	
 }
 
 /******************************************************************************************************************************************/

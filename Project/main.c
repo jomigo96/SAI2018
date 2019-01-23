@@ -104,10 +104,10 @@ int main(int argc, char** argv){
 		draw_beacons(renderer, im_on, mm_on, om_on, &b_on);
 		draw_state(renderer, bandeira, font);
 		draw_CDI(renderer, x_sum_pt, y_sum_pt);
-		botao(renderer, &sel_freq);
+		running = botao(renderer, &sel_freq);
 		SDL_RenderPresent(renderer);
 
-		running = quit();
+		//running = quit();
 	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

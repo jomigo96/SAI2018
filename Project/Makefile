@@ -12,12 +12,10 @@ ils: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:
-	rm -rf *.o ils stub main
+	rm -rf *.o ils main
 
 run: ils
 	./ils runways.txt 8080
 
-stub: stub.o
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 .PHONY: ils clean run stub all
