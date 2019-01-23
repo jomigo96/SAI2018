@@ -1,5 +1,15 @@
+/**
+ * @file main.c
+ * @author João Gonçalves, Tiago Oliveira, Carolina Serra
+ * @date 23 Jan 2019
+ * 
+ * @brief Main funtion for the ILS emulator
+ *
+ * */
+
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 #include "ils.h"
 #include "reception_thread.h"
 
@@ -31,6 +41,7 @@ int main(int argc, char** argv){
         exit(1);
 	}
 	uint32_t port = atoi(argv[2]);
+	int last_timestamp=0;
 
 	// Launch data gatherer thread
 	pthread_t tid;
@@ -59,14 +70,17 @@ int main(int argc, char** argv){
 
 		if(sel_rwy!=-1)
 		{
-			//rececao da posição;
-			pthread_mutex_lock(&m);
-			if(ready){
+			//rececao da posição
+
+			if(ready){ //reads are thread-safe
+
+				pthread_mutex_lock(&m);
 				new=1;
-				p=position;
+				p=position; // Copy to local memory
 				ready=0;
+				pthread_mutex_unlock(&m);
+				last_timestamp = time(NULL);
 			}
-			pthread_mutex_unlock(&m);
 
 			if(new){
 				new=0;
@@ -83,7 +97,7 @@ int main(int argc, char** argv){
 					if (in_loc==1)
 					{
 						movimento_ponteiro_localizer(loc_ang, &x_sum_pt);
-						in_glide_slope(p_enu, rwy, sel_rwy, dist_rwy, &in_gs, &gs_ang);
+						in_glide_slope(p_enu, rwy, sel_rwy, dist_rwy, &in_gs, &gs_ang, loc_ang);
 						if (in_gs==1)
 							movimento_ponteiro_glide_slope(gs_ang, &y_sum_pt);
 						in_markers(p_enu, rwy, sel_rwy, loc_ang, &im_on, &mm_on, &om_on);
@@ -91,8 +105,9 @@ int main(int argc, char** argv){
 						bandeira=1;
 				} else
 					bandeira=1;
-			} else
+			}else if((time(NULL)-last_timestamp) > 2)
 				bandeira=1;
+			  
 
 		}else
 			bandeira=1;
@@ -106,9 +121,8 @@ int main(int argc, char** argv){
 		draw_CDI(renderer, x_sum_pt, y_sum_pt);
 		running = botao(renderer, &sel_freq);
 		SDL_RenderPresent(renderer);
-
-		//running = quit();
 	}
+
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

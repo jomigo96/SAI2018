@@ -1,3 +1,14 @@
+/**
+ * @file reception_thread.h
+ * @author João Gonçalves, Tiago Oliveira, Carolina Serra
+ * @date 23 Jan 2019
+ * 
+ * @brief Data reception handler
+ *
+ * Provides a thread to listen on a UDP socket for incomming data, and store it appropriately.
+ * Coded inline.
+ * */
+
 #ifndef RECEPTION_H
 #define RECEPTION_H
 
@@ -24,6 +35,15 @@ extern int ready;
 extern struct position_gps position;
 
 // Reverses endianess of a floating point value
+/**
+ *
+ * @brief Reverses endianess of a floating point value
+ *
+ * Network transmission is by defauld big-endian, while most machines are little-endian.
+ *
+ * @param value floating point value (4 bytes)
+ * @return same floating point value with reversed endianess
+ * */
 float float_swap(float value){
     union v {
         float       f;
@@ -38,6 +58,18 @@ float float_swap(float value){
     return val.f;
 }
 
+/**
+ * @brief Data reception thread
+ *
+ * Opens a UDP socket to listen for incomming data and store it on a global data structure.
+ * Converts the endianess of values based on the macro BIGENDIAN being defined or not.
+ * Calls exit() in case there is an error opening or binding the 
+ * socket (common cause is the port already being in use).
+ * Runs indefinately.
+ * 
+ * @param ptr pointer to an uint32_t port number
+ * @return Not used
+ * */
 void* reception_thread(void* ptr){
 
     // Setup UDP socket
@@ -108,7 +140,5 @@ void* reception_thread(void* ptr){
         }
     }
 }
-
-
 
 #endif //RECEPTION_H
