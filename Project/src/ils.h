@@ -197,13 +197,10 @@ void movimento_ponteiro_glide_slope(double gs_ang, double* y_sum_pt);
 /**
  * @brief checks if aircraft in passing the markers
  * 
- * Compares the position of the aircraft to the position of each marker
- * If the aircraft is at 340m or less from the outer marker, and under 1200m
- * of altitude, om_on is set to 1
- * If the aircraft is at 120m or less from the middle marker, and under 600m
- * of altitude, mm_on is set to 1
- * If the aircraft is at 70m or less from the inner marker, and under 300m
- * of altitude, im_on is set to 1
+ * Compares the position of the aircraft to the position of each marker and their respective coverage.
+ * If the aircraft is at the outer marker coverage om_on is set to 1.
+ * In the same way, if the aircraft is at middle marker mm_on is set to 1 
+ * And if the aircraft is at the inner marker im_on is set to 1
  *
  * @param p_enu aircraft coordinates in the East North Up referential, relative to the runway
  * @param rwy pointer to the ordered array of runways
