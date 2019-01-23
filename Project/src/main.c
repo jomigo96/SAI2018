@@ -26,7 +26,7 @@ int main(int argc, char** argv){
 	SDL_Window* window;
 
 	int num_rwys=0, sel_rwy, b_on=0;
-	int bandeira=0, in_loc=0, in_gs=0, im_on=0, mm_on=0, om_on=0;
+	int in_loc=0, in_gs=0, im_on=0, mm_on=0, om_on=0;
 	int sel_freq=1095;
 	double dist_rwy, loc_ang, gs_ang;
 	double x_sum_pt=0, y_sum_pt=0;
@@ -65,7 +65,7 @@ int main(int argc, char** argv){
 	runway_coordinates_to_ecef(rwy, num_rwys);
 
 	while(running){
-		bandeira=0; in_loc=0; in_gs=0; om_on=0; mm_on=0; im_on=0;
+		om_on=0; mm_on=0; im_on=0;
 		detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
 
 		if(sel_rwy!=-1)
@@ -101,23 +101,22 @@ int main(int argc, char** argv){
 						if (in_gs==1)
 							movimento_ponteiro_glide_slope(gs_ang, &y_sum_pt);
 						in_markers(p_enu, rwy, sel_rwy, loc_ang, &im_on, &mm_on, &om_on);
-					} else
-						bandeira=1;
-				} else
-					bandeira=1;
-			}else if((time(NULL)-last_timestamp) > 2)
-				bandeira=1;
+					} 
+				} 
+			}else if((time(NULL)-last_timestamp) > 2){
+                in_gs = 0;
+                in_loc = 0;
+            }
 			  
 
-		}else
-			bandeira=1;
+		}
 
 		draw_indicator(renderer);
 		draw_compass(renderer, font, rwy[sel_rwy].or_local);
 		write_freq(renderer, sel_freq/10.0, font);
 		name_markers( renderer, font);
 		draw_beacons(renderer, im_on, mm_on, om_on, &b_on);
-		draw_state(renderer, bandeira, font);
+		draw_state(renderer,  !in_loc, !in_gs, font);
 		draw_CDI(renderer, x_sum_pt, y_sum_pt);
 		running = botao(renderer, &sel_freq);
 		SDL_RenderPresent(renderer);

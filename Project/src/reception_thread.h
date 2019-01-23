@@ -119,11 +119,11 @@ void* reception_thread(void* ptr){
 #ifdef BIGENDIAN
 			position.latitude = float_swap(*(float*)(buf+latitude_idx))*DEG_to_RAD;
 			position.longitude = float_swap(*(float*)(buf+longitude_idx))*DEG_to_RAD;
-			position.altitude = float_swap(*(float*)(buf+altitude_idx));
+			position.altitude = float_swap(*(float*)(buf+altitude_idx))*0.3048;
 #else
             position.latitude =  *(float*)(buf+latitude_idx)*DEG_to_RAD;
             position.longitude = *(float*)(buf+longitude_idx)*DEG_to_RAD;
-            position.altitude =  *(float*)(buf+altitude_idx);
+            position.altitude =  *(float*)(buf+altitude_idx)*0.3048;
 #endif
             ready = 1;
             pthread_mutex_unlock(&m);

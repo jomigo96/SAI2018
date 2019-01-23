@@ -323,18 +323,17 @@ void draw_compass(SDL_Renderer *renderer, TTF_Font *font, float course);
 /**
  * @brief draws GS and NAV flags on the ILS indicator
  * 
- * Draws two red boxes on the ILS indicator
- * Writes GS on the horizontal box
- * Depending on the value of the parameter bandeira, writes OFF or NAV 
- * on the vertical box
- *
+ * Draws two boxes on the ILS indicator
+ * Writes GS on the horizontal box, and NAV on the vertical one
+ * Depending if the aircraft is in range, the boxes are red or grey
  *
  * @param renderer pointer to renderer
- * @param bandeira integer that defines whether the NAV flag should be ON or OFF
+ * @param nav_flag integer that defines whether the NAV flag should be ON or OFF
+ * @param gs_flag integer that defines whether the GS flag should be ON or OFF
  * @param font pointer to the font which will be used to write 
  * the flags
  * */
-void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font);
+void draw_state(SDL_Renderer *renderer, int nav_flag, int gs_flag, TTF_Font *font);
 
 /**
  * @brief writes the selected frequency on the top right corner of the window

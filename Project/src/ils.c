@@ -430,10 +430,7 @@ void write_freq(SDL_Renderer *renderer, float frequency, TTF_Font *font){
 
 }
 
-void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font){
-    //Desenhar quadradinhos (tirar da funçao draw_indicator
-    //float x=w_height/2;
-    //float r=x-50;
+void draw_state(SDL_Renderer *renderer, int nav_flag, int gs_flag, TTF_Font *font){
 
     int xgs=w_height/6;
     int ygs=3*w_height/8;
@@ -446,24 +443,25 @@ void draw_state(SDL_Renderer *renderer, int bandeira, TTF_Font *font){
     SDL_Rect flag_nav={xnav, xgs,hgs, wgs};
     SDL_Rect flag_gs={xgs,ygs, wgs, hgs};
 
-    SDL_SetRenderDrawColor(renderer, 153, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &flag_nav);
+    if(gs_flag)
+        SDL_SetRenderDrawColor(renderer, 153, 0, 0, SDL_ALPHA_OPAQUE);
+    else
+        SDL_SetRenderDrawColor(renderer, 105, 105, 105, SDL_ALPHA_OPAQUE);
+        
     SDL_RenderFillRect(renderer, &flag_gs);
-    // int b=0;  // Testar com OFF
-    //Escrever GS
 
+    if(nav_flag)
+        SDL_SetRenderDrawColor(renderer, 153, 0, 0, SDL_ALPHA_OPAQUE);
+    else
+        SDL_SetRenderDrawColor(renderer, 105, 105, 105, SDL_ALPHA_OPAQUE);
+
+    SDL_RenderFillRect(renderer, &flag_nav);
+
+    //Escrever GS/NAV
     draw_text(renderer, xgs+wgs/3,ygs+hgs/5 , 0, 1, "GS", font);
-    //Escrever OFF/NAV
-    if (bandeira==0){
-        draw_text(renderer, xnav+hgs/3,xgs , 0, 1, "N", font);
-        draw_text(renderer, xnav+hgs/3, xgs+wgs/3, 0, 1, "A", font);
-        draw_text(renderer, xnav+hgs/3, xgs+2*wgs/3, 0, 1, "V", font);
-    }
-    else {
-        draw_text(renderer, xnav+hgs/3,xgs , 0, 1, "O", font);
-        draw_text(renderer, xnav+hgs/3, xgs+wgs/3, 0, 1, "F", font);
-        draw_text(renderer, xnav+hgs/3, xgs+2*wgs/3, 0, 1, "F", font);
-    }
+    draw_text(renderer, xnav+hgs/3,xgs , 0, 1, "N", font);
+    draw_text(renderer, xnav+hgs/3, xgs+wgs/3, 0, 1, "A", font);
+    draw_text(renderer, xnav+hgs/3, xgs+2*wgs/3, 0, 1, "V", font);
 
 }
 
