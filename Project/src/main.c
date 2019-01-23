@@ -65,7 +65,7 @@ int main(int argc, char** argv){
 	runway_coordinates_to_ecef(rwy, num_rwys);
 
 	while(running){
-		om_on=0; mm_on=0; im_on=0;
+		om_on=0; mm_on=0; im_on=0; in_loc=0; in_gs=0;
 		detect_sel_runway(rwy, num_rwys, sel_freq, &sel_rwy);
 
 		if(sel_rwy!=-1)
