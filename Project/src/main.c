@@ -154,6 +154,10 @@ int main(int argc, char** argv){
 	}
 
 	SDL_DestroyRenderer(renderer);
+	Mix_FreeMusic(audio_outer);
+	Mix_FreeMusic(audio_middle);
+	Mix_FreeMusic(audio_inner);
+	Mix_CloseAudio();
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	TTF_Quit();
