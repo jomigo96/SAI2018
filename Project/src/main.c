@@ -12,6 +12,7 @@
 #include <time.h>
 #include "ils.h"
 #include "reception_thread.h"
+#include <SDL_mixer.h>
 
 // Global variables
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
@@ -49,7 +50,7 @@ int main(int argc, char** argv){
 	
 	struct sigaction action;
 	sigaction(SIGINT, NULL, &action);
-	SDL_Init ( SDL_INIT_VIDEO );
+	SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 	TTF_Init();
 	sigaction(SIGINT, &action, NULL); //SDL overwrites the CTRL-C signal
 	
@@ -60,6 +61,23 @@ int main(int argc, char** argv){
 		fprintf(stderr, "Error opening font\n");
 		exit(1);
 	}
+	int flags = MIX_INIT_MP3, result;
+	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640);
+	if (flags != (result = Mix_Init(flags))) {
+        printf("Could not initialize mixer (result: %d).\n", result);
+        printf("Mix_Init: %s\n", Mix_GetError());
+        exit(1);
+    }
+
+	Mix_Music *audio_outer, *audio_middle, *audio_inner;
+	audio_outer = Mix_LoadMUS("outer.mp3");
+	audio_middle = Mix_LoadMUS("middle.mp3");
+	audio_inner = Mix_LoadMUS("inner.mp3");
+	if((audio_outer == NULL)||(audio_middle == NULL)||(audio_inner == NULL)){
+		printf("Error opening music file\n");
+		exit(1);
+	}
+	//Mix_PlayMusic(audio_outer, 1);
 
 	import_info_runways(argv[1], rwy, &num_rwys);
 	runway_coordinates_to_ecef(rwy, num_rwys);
@@ -109,6 +127,19 @@ int main(int argc, char** argv){
             }
 			  
 
+		}
+
+		if(om_on){
+			Mix_PlayMusic(audio_outer, 1);
+		}
+		if(mm_on){
+			Mix_PlayMusic(audio_middle, 1);
+		}
+		if(im_on){
+			Mix_PlayMusic(audio_inner, 1);
+		}
+		if(!om_on && !mm_on && !im_on){
+			Mix_HaltMusic();
 		}
 
 		draw_indicator(renderer);

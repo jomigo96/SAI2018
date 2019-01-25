@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -pedantic -Wall -std=c99 -I/usr/include/SDL2 -D_POSIX_C_SOURCE 
-LDFLAGS = -lm -lGL -lSDL2 -lpthread -lSDL2_ttf
+LDFLAGS = -lm -lGL -lSDL2 -lpthread -lSDL2_ttf -lSDL2_mixer
 OBJ = ils.o main.o
 
 %.o: %.c 
